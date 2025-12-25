@@ -1,0 +1,5 @@
+C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/ContactSystem.dir
+C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/edit_cache.dir
+C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/rebuild_cache.dir
+C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/ContactSystem_autogen_timestamp_deps.dir
+C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/ContactSystem_autogen.dir

@@ -1,0 +1,25 @@
+{
+	"BUILD_DIR" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen",
+	"CMAKE_BINARY_DIR" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_BINARY_DIR" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug",
+	"CMAKE_CURRENT_SOURCE_DIR" : "C:/Users/tinf/Documents/ContactSystem",
+	"CMAKE_SOURCE_DIR" : "C:/Users/tinf/Documents/ContactSystem",
+	"CROSS_CONFIG" : false,
+	"GENERATOR" : "Ninja",
+	"INCLUDE_DIR" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen/include",
+	"INPUTS" : 
+	[
+		"C:/Users/tinf/Documents/ContactSystem/fonts/fusion-pixel-10px-monospaced-zh_hant.ttf"
+	],
+	"LOCK_FILE" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/ContactSystem_autogen.dir/AutoRcc_fonts_EWIEGA46WW_Lock.lock",
+	"MULTI_CONFIG" : false,
+	"OPTIONS" : [ "--no-zstd", "-name", "fonts" ],
+	"OUTPUT_CHECKSUM" : "EWIEGA46WW",
+	"OUTPUT_NAME" : "qrc_fonts.cpp",
+	"RCC_EXECUTABLE" : "C:/Qt1/6.5.3/mingw_64/./bin/rcc.exe",
+	"RCC_LIST_OPTIONS" : [ "--list" ],
+	"SETTINGS_FILE" : "C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/CMakeFiles/ContactSystem_autogen.dir/AutoRcc_fonts_EWIEGA46WW_Used.txt",
+	"SOURCE" : "C:/Users/tinf/Documents/ContactSystem/fonts.qrc",
+	"USE_BETTER_GRAPH" : false,
+	"VERBOSITY" : 0
+}
