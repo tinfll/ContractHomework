@@ -1,9 +1,9 @@
-#include "contact.h"
+﻿#include "contact.h"
 #include <QDebug>
 
 bool Contact::parseFromString(const QString &line){
 
-    //字符串切分可查手册！！！
+    //字符串切分可查！！！
     //
     QStringList parts = line.split(' ', Qt::SkipEmptyParts);
 

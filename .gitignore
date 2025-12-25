@@ -54,5 +54,11 @@ Thumbs.db
 *~
 *.orig
 
+# vcpkg相关
+vcpkg_installed/           # vcpkg安装的库文件
+vcpkg/downloads/           # vcpkg下载的缓存
+vcpkg/buildtrees/         # vcpkg的构建中间文件
+vcpkg/packages/           # vcpkg打包的文件
+
 # 你自己的数据/生成文件（根据需要调整）
 # Data/contacts_*.txt  # 如果这些txt文件会变化，取消注释这行

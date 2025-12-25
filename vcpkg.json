@@ -1,0 +1,14 @@
+{
+  "name": "contactsystem",
+  "version": "1.0.0",
+  "dependencies": [
+    {
+      "name": "qtbase",
+      "features": ["gui", "widgets"]
+    },
+    {
+      "name": "qttools"
+    }
+  ],
+  "builtin-baseline": "a98c5ad86e4d4c6c800c0b8e42c1b0c0c5e1d3a5"
+}
