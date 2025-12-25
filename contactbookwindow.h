@@ -1,4 +1,4 @@
-#ifndef CONTACTBOOKWINDOW_H
+﻿#ifndef CONTACTBOOKWINDOW_H
 #define CONTACTBOOKWINDOW_H
 
 #include <QWidget>

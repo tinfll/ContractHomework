@@ -9,7 +9,7 @@ class MainWindow;
 }
 QT_END_NAMESPACE
 
-class ContactBookWindow;//前向申明
+class ContactBookWindow;
 class AnalysisWindow;
 
 
