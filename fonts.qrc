@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/fonts">
+        <file>fonts/fusion-pixel-10px-monospaced-zh_hant.ttf</file>
+    </qresource>
+</RCC>
