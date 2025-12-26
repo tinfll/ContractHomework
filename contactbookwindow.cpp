@@ -63,7 +63,7 @@ void ContactBookWindow::setFilePath(const QString &filePath)
 
     QFileInfo fileInfo(filePath);
     QString fileName = fileInfo.fileName();
-    setWindowTitle("我们都有各自的生活:" + fileName);
+    setWindowTitle("查看用户通讯录界面:" + fileName);
 
 
     // 加载并显示联系人

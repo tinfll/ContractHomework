@@ -51,7 +51,7 @@ void MainWindow::setupConnections()
 void MainWindow::onExitButtonClicked()
 {
     QMessageBox::StandardButton reply;
-    reply = QMessageBox::question(this, "相昀可爱可爱可爱", "相昀真的可爱吗?", QMessageBox::Yes | QMessageBox::No);
+    reply = QMessageBox::question(this, "退出", "退出确定?", QMessageBox::Yes | QMessageBox::No);
 
     if(reply == QMessageBox::Yes){
         QApplication::quit();
@@ -87,7 +87,7 @@ void MainWindow::onSelectPersonButtonClicked()
     bool ok;
     //标记此处去查轮子可写文件交互逻辑!!!!!!写报告用
     //文件判断空选
-    QString selectedFile = QInputDialog::getItem(this, "此岸亦或彼岸", "请选择你的相", fileList, 0 , false, &ok);
+    QString selectedFile = QInputDialog::getItem(this, "选择文件", "请选择用户文件", fileList, 0 , false, &ok);
 
     if(ok && !selectedFile.isEmpty()){
         QString fullPath = dataDir + selectedFile;
@@ -132,8 +132,8 @@ void MainWindow::onCompareButtonClicked(){
     // 选择第一个文件
     bool ok1;
     QString selectedFile1 = QInputDialog::getItem(this,
-                                                  "选择第一个通讯录",
-                                                  "请选择第一个要比较的通讯录:",
+                                                  "选择第一个通讯录文件",
+                                                  "请选择第一个要比较的通讯录文件:",
                                                   fileList,
                                                   0,
                                                   false,

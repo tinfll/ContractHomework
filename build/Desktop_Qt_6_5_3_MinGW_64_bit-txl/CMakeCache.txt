@@ -172,6 +172,8 @@ CMAKE_MODULE_LINKER_FLAGS_RELEASE:STRING=
 // RELWITHDEBINFO builds.
 CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO:STRING=
 
+CMAKE_MODULE_PATH:STRING=C:/Qt1/6.5.3/mingw_64/lib/cmake/Qt6;C:/Qt1/6.5.3/mingw_64/lib/cmake/Qt6/3rdparty/extra-cmake-modules/find-modules;C:/Qt1/6.5.3/mingw_64/lib/cmake/Qt6/3rdparty/kwin
+
 //Path to a program.
 CMAKE_NM:FILEPATH=C:/Qt1/Tools/mingw1120_64/bin/nm.exe
 
@@ -181,8 +183,7 @@ CMAKE_OBJCOPY:FILEPATH=C:/Qt1/Tools/mingw1120_64/bin/objcopy.exe
 //Path to a program.
 CMAKE_OBJDUMP:FILEPATH=C:/Qt1/Tools/mingw1120_64/bin/objdump.exe
 
-//No help, variable specified on the command line.
-CMAKE_PREFIX_PATH:PATH=C:/Qt1/6.5.3/mingw_64
+CMAKE_PREFIX_PATH:STRING=C:/Qt1/6.5.3/mingw_64
 
 //Value Computed by CMake
 CMAKE_PROJECT_DESCRIPTION:STATIC=
@@ -288,6 +289,8 @@ CMAKE_STRIP:FILEPATH=C:/Qt1/Tools/mingw1120_64/bin/strip.exe
 //Path to a program.
 CMAKE_TAPI:FILEPATH=CMAKE_TAPI-NOTFOUND
 
+CMAKE_TOOLCHAIN_FILE:PATH=C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-txl/vcpkg-dependencies/toolchain.cmake
+
 //If this value is on, makefiles will be generated without the
 // .SILENT directive, and all commands will be echoed to the console
 // during the make.  This is useful for debugging only. With Visual
@@ -318,6 +321,9 @@ QT_CREATOR_SKIP_MAINTENANCE_TOOL_PROVIDER:BOOL=OFF
 
 //Skip Qt Creator's package manager auto-setup
 QT_CREATOR_SKIP_PACKAGE_MANAGER_SETUP:BOOL=OFF
+
+//Skip Qt Creator's vcpkg package manager auto-setup
+QT_CREATOR_SKIP_VCPKG_SETUP:BOOL=OFF
 
 //Qt Creator source groups extensions
 QT_CREATOR_SOURCE_GROUPS:BOOL=ON
@@ -369,6 +375,9 @@ Vulkan_LIBRARY:FILEPATH=Vulkan_LIBRARY-NOTFOUND
 
 //Path to a program.
 WINDEPLOYQT_EXECUTABLE:FILEPATH=C:/Qt1/6.5.3/mingw_64/bin/windeployqt.exe
+
+//Path to a program.
+vcpkg_program:FILEPATH=C:/Users/tinf/Documents/ContactSystem/vcpkg/vcpkg.exe
 
 
 ########################
