@@ -25,7 +25,7 @@
        </font>
       </property>
       <property name="text">
-       <string>我是仟虹的狗</string>
+       <string>通讯录管理系统</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -40,7 +40,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>30</height>
        </size>
       </property>
      </spacer>
@@ -95,7 +95,7 @@
       <property name="sizeHint" stdset="0">
        <size>
         <width>20</width>
-        <height>40</height>
+        <height>10</height>
        </size>
       </property>
      </spacer>
