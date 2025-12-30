@@ -3,4 +3,5 @@
 #include "EWIEGA46WW/moc_analysiswindow.cpp"
 #include "EWIEGA46WW/moc_contactbookwindow.cpp"
 #include "EWIEGA46WW/moc_editcontactdialog.cpp"
+#include "EWIEGA46WW/moc_imageutils.cpp"
 #include "EWIEGA46WW/moc_mainwindow.cpp"

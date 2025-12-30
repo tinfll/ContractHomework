@@ -121,6 +121,14 @@ build CMakeFiles/ContactSystem.dir/analysiswindow.cpp.obj: CXX_COMPILER__Contact
   OBJECT_DIR = CMakeFiles\ContactSystem.dir
   OBJECT_FILE_DIR = CMakeFiles\ContactSystem.dir
 
+build CMakeFiles/ContactSystem.dir/imageutils.cpp.obj: CXX_COMPILER__ContactSystem_unscanned_Debug C$:/Users/tinf/Documents/ContactSystem/imageutils.cpp || cmake_object_order_depends_target_ContactSystem
+  DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
+  DEP_FILE = CMakeFiles\ContactSystem.dir\imageutils.cpp.obj.d
+  FLAGS = -DQT_QML_DEBUG -g -std=gnu++17 -fdiagnostics-color=always
+  INCLUDES = -IC:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen/include -isystem C:/Qt1/6.5.3/mingw_64/include/QtCore -isystem C:/Qt1/6.5.3/mingw_64/include -isystem C:/Qt1/6.5.3/mingw_64/mkspecs/win32-g++ -isystem C:/Qt1/6.5.3/mingw_64/include/QtGui -isystem C:/Qt1/6.5.3/mingw_64/include/QtWidgets
+  OBJECT_DIR = CMakeFiles\ContactSystem.dir
+  OBJECT_FILE_DIR = CMakeFiles\ContactSystem.dir
+
 build CMakeFiles/ContactSystem.dir/ContactSystem_autogen/EWIEGA46WW/qrc_fonts.cpp.obj: CXX_COMPILER__ContactSystem_unscanned_Debug C$:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen/EWIEGA46WW/qrc_fonts.cpp || cmake_object_order_depends_target_ContactSystem
   DEFINES = -DMINGW_HAS_SECURE_API=1 -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -DUNICODE -DWIN32 -DWIN64 -D_ENABLE_EXTENDED_ALIGNED_STORAGE -D_UNICODE -D_WIN64
   DEP_FILE = CMakeFiles\ContactSystem.dir\ContactSystem_autogen\EWIEGA46WW\qrc_fonts.cpp.obj.d
@@ -137,7 +145,7 @@ build CMakeFiles/ContactSystem.dir/ContactSystem_autogen/EWIEGA46WW/qrc_fonts.cp
 #############################################
 # Link the executable ContactSystem.exe
 
-build ContactSystem.exe: CXX_EXECUTABLE_LINKER__ContactSystem_Debug CMakeFiles/ContactSystem.dir/ContactSystem_autogen/mocs_compilation.cpp.obj CMakeFiles/ContactSystem.dir/main.cpp.obj CMakeFiles/ContactSystem.dir/mainwindow.cpp.obj CMakeFiles/ContactSystem.dir/contactbookwindow.cpp.obj CMakeFiles/ContactSystem.dir/fontmanager.cpp.obj CMakeFiles/ContactSystem.dir/contact.cpp.obj CMakeFiles/ContactSystem.dir/addcontactdialog.cpp.obj CMakeFiles/ContactSystem.dir/editcontactdialog.cpp.obj CMakeFiles/ContactSystem.dir/analysiswindow.cpp.obj CMakeFiles/ContactSystem.dir/ContactSystem_autogen/EWIEGA46WW/qrc_fonts.cpp.obj | C$:/Qt1/6.5.3/mingw_64/lib/libQt6Widgets.a C$:/Qt1/6.5.3/mingw_64/lib/libQt6Gui.a C$:/Qt1/6.5.3/mingw_64/lib/libQt6Core.a || ContactSystem_autogen ContactSystem_autogen_timestamp_deps
+build ContactSystem.exe: CXX_EXECUTABLE_LINKER__ContactSystem_Debug CMakeFiles/ContactSystem.dir/ContactSystem_autogen/mocs_compilation.cpp.obj CMakeFiles/ContactSystem.dir/main.cpp.obj CMakeFiles/ContactSystem.dir/mainwindow.cpp.obj CMakeFiles/ContactSystem.dir/contactbookwindow.cpp.obj CMakeFiles/ContactSystem.dir/fontmanager.cpp.obj CMakeFiles/ContactSystem.dir/contact.cpp.obj CMakeFiles/ContactSystem.dir/addcontactdialog.cpp.obj CMakeFiles/ContactSystem.dir/editcontactdialog.cpp.obj CMakeFiles/ContactSystem.dir/analysiswindow.cpp.obj CMakeFiles/ContactSystem.dir/imageutils.cpp.obj CMakeFiles/ContactSystem.dir/ContactSystem_autogen/EWIEGA46WW/qrc_fonts.cpp.obj | C$:/Qt1/6.5.3/mingw_64/lib/libQt6Widgets.a C$:/Qt1/6.5.3/mingw_64/lib/libQt6Gui.a C$:/Qt1/6.5.3/mingw_64/lib/libQt6Core.a || ContactSystem_autogen ContactSystem_autogen_timestamp_deps
   FLAGS = -DQT_QML_DEBUG -g
   LINK_LIBRARIES = C:/Qt1/6.5.3/mingw_64/lib/libQt6Widgets.a  C:/Qt1/6.5.3/mingw_64/lib/libQt6Gui.a  C:/Qt1/6.5.3/mingw_64/lib/libQt6Core.a  -lmpr  -luserenv  -ld3d11  -ldxgi  -ldxguid  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\ContactSystem.dir

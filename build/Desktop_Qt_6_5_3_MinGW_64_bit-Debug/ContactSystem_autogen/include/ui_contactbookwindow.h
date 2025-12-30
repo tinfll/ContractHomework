@@ -117,7 +117,7 @@ public:
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
         scrollAreaWidgetContents->setObjectName("scrollAreaWidgetContents");
-        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 580, 350));
+        scrollAreaWidgetContents->setGeometry(QRect(0, 0, 580, 365));
         verticalLayout_2 = new QVBoxLayout(scrollAreaWidgetContents);
         verticalLayout_2->setObjectName("verticalLayout_2");
         verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
@@ -142,18 +142,19 @@ public:
 
     void retranslateUi(QMainWindow *ContactBookWindow)
     {
-        ContactBookWindow->setWindowTitle(QCoreApplication::translate("ContactBookWindow", "\351\200\232\350\256\257\345\275\225", nullptr));
+        ContactBookWindow->setWindowTitle(QCoreApplication::translate("ContactBookWindow", "\347\244\274\347\211\251", nullptr));
         searchTypeComboBox->setItemText(0, QCoreApplication::translate("ContactBookWindow", "\345\247\223\345\220\215", nullptr));
         searchTypeComboBox->setItemText(1, QCoreApplication::translate("ContactBookWindow", "\345\237\216\345\270\202", nullptr));
         searchTypeComboBox->setItemText(2, QCoreApplication::translate("ContactBookWindow", "\346\240\207\347\255\276", nullptr));
         searchTypeComboBox->setItemText(3, QCoreApplication::translate("ContactBookWindow", "\347\224\265\350\257\235", nullptr));
 
+        searchTypeComboBox->setCurrentText(QCoreApplication::translate("ContactBookWindow", "\345\247\223\345\220\215", nullptr));
         searchInput->setPlaceholderText(QCoreApplication::translate("ContactBookWindow", "\350\276\223\345\205\245\346\237\245\350\257\242\345\205\263\351\224\256\350\257\215...", nullptr));
         searchButton->setText(QCoreApplication::translate("ContactBookWindow", "\346\237\245\350\257\242", nullptr));
         resetButton->setText(QCoreApplication::translate("ContactBookWindow", "\351\207\215\347\275\256", nullptr));
-        titleLabel->setText(QCoreApplication::translate("ContactBookWindow", "\350\201\224\347\263\273\344\272\272\345\210\227\350\241\250", nullptr));
-        addContactButton->setText(QCoreApplication::translate("ContactBookWindow", "+ \346\267\273\345\212\240\350\201\224\347\263\273\344\272\272", nullptr));
-        countLabel->setText(QCoreApplication::translate("ContactBookWindow", "\345\205\261 0 \344\270\252\350\201\224\347\263\273\344\272\272", nullptr));
+        titleLabel->setText(QCoreApplication::translate("ContactBookWindow", "\347\244\274\347\211\251\345\210\227\350\241\250", nullptr));
+        addContactButton->setText(QCoreApplication::translate("ContactBookWindow", "+ \346\267\273\345\212\240\347\244\274\347\211\251(??)", nullptr));
+        countLabel->setText(QCoreApplication::translate("ContactBookWindow", "\345\205\261 0 \344\270\252\347\244\274\347\211\251", nullptr));
         backButton->setText(QCoreApplication::translate("ContactBookWindow", "\350\277\224\345\233\236\344\270\273\347\225\214\351\235\242", nullptr));
     } // retranslateUi
 

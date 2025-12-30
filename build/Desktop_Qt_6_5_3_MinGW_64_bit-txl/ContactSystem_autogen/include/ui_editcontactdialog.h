@@ -54,10 +54,10 @@ public:
     {
         if (EditContactDialog->objectName().isEmpty())
             EditContactDialog->setObjectName("EditContactDialog");
-        EditContactDialog->resize(400, 400);
+        EditContactDialog->resize(442, 428);
         verticalLayoutWidget = new QWidget(EditContactDialog);
         verticalLayoutWidget->setObjectName("verticalLayoutWidget");
-        verticalLayoutWidget->setGeometry(QRect(10, 10, 381, 341));
+        verticalLayoutWidget->setGeometry(QRect(0, 30, 421, 361));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
         verticalLayout->setObjectName("verticalLayout");
         verticalLayout->setContentsMargins(0, 0, 0, 0);
@@ -65,6 +65,9 @@ public:
         formLayout->setObjectName("formLayout");
         label = new QLabel(verticalLayoutWidget);
         label->setObjectName("label");
+        QFont font;
+        font.setFamilies({QString::fromUtf8("Fusion Pixel 10px M zh_hant")});
+        label->setFont(font);
 
         formLayout->setWidget(0, QFormLayout::LabelRole, label);
 
@@ -143,9 +146,6 @@ public:
 
         formLayout->setWidget(7, QFormLayout::FieldRole, tagsEdit);
 
-
-        verticalLayout->addLayout(formLayout);
-
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName("horizontalLayout");
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
@@ -163,7 +163,10 @@ public:
         horizontalLayout->addWidget(cancelButton);
 
 
-        verticalLayout->addLayout(horizontalLayout);
+        formLayout->setLayout(8, QFormLayout::FieldRole, horizontalLayout);
+
+
+        verticalLayout->addLayout(formLayout);
 
 
         retranslateUi(EditContactDialog);
@@ -174,14 +177,14 @@ public:
     void retranslateUi(QDialog *EditContactDialog)
     {
         EditContactDialog->setWindowTitle(QCoreApplication::translate("EditContactDialog", "\344\277\256\346\224\271\350\201\224\347\263\273\344\272\272", nullptr));
-        label->setText(QCoreApplication::translate("EditContactDialog", "\345\247\223\345\220\215:", nullptr));
-        label_2->setText(QCoreApplication::translate("EditContactDialog", "\346\200\247\345\210\253:", nullptr));
-        label_3->setText(QCoreApplication::translate("EditContactDialog", "\345\271\264\351\276\204:", nullptr));
-        label_4->setText(QCoreApplication::translate("EditContactDialog", "\347\224\265\350\257\235:", nullptr));
-        label_5->setText(QCoreApplication::translate("EditContactDialog", "\345\237\216\345\270\202:", nullptr));
-        label_6->setText(QCoreApplication::translate("EditContactDialog", "\345\215\225\344\275\215:", nullptr));
-        label_7->setText(QCoreApplication::translate("EditContactDialog", "\344\275\217\345\235\200:", nullptr));
-        label_8->setText(QCoreApplication::translate("EditContactDialog", "\346\240\207\347\255\276:", nullptr));
+        label->setText(QCoreApplication::translate("EditContactDialog", "\345\220\215\347\247\260:", nullptr));
+        label_2->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2171:", nullptr));
+        label_3->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2172:", nullptr));
+        label_4->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2173:", nullptr));
+        label_5->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2174:", nullptr));
+        label_6->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2175:", nullptr));
+        label_7->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2176:", nullptr));
+        label_8->setText(QCoreApplication::translate("EditContactDialog", "\344\277\241\346\201\257\346\240\2177", nullptr));
         saveButton->setText(QCoreApplication::translate("EditContactDialog", "\344\277\235\345\255\230", nullptr));
         cancelButton->setText(QCoreApplication::translate("EditContactDialog", "\345\217\226\346\266\210", nullptr));
     } // retranslateUi

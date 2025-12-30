@@ -1,10 +1,9 @@
-#ifndef ANALYSISWINDOW_H
+﻿#ifndef ANALYSISWINDOW_H
 #define ANALYSISWINDOW_H
 
 #include <QMainWindow>
-#include <QMap>
-#include <QSet>
-#include "Contact.h"
+#include <QImage>
+#include <QString>
 
 namespace Ui {
 class AnalysisWindow;
@@ -15,39 +14,44 @@ class AnalysisWindow : public QMainWindow
     Q_OBJECT
 
 public:
+    // 删除原来的setAnalysisFiles，改用新的函数
     explicit AnalysisWindow(QWidget *parent = nullptr);
     ~AnalysisWindow();
 
-    void setAnalysisFiles(const QString &file1, const QString &file2);
+    // 新函数：加载并显示图片
+    void loadAndDisplayImage(const QString &imagePath);
+
+signals:
+    // 新增信号：窗口关闭时通知主窗口
+    void windowClosed();
+
+protected:
+    // 重写关闭事件
+    void closeEvent(QCloseEvent *event) override;
 
 private slots:
-    void onBackButtonClicked();
+    void onApplyEffectButtonClicked();    // 应用特效
+    void onSaveImageButtonClicked();      // 保存图片
+    void onBackButtonClicked();           // 返回主界面
 
 private:
     Ui::AnalysisWindow *ui;
-    QString filePath1;
-    QString filePath2;
-    QList<Contact> contacts1;
-    QList<Contact> contacts2;
 
-    // 加载数据
-    void loadContactsFromFile(const QString &filePath, QList<Contact> &contacts);
+    // 图片相关
+    QImage originalImage;          // 原始图片
+    QImage processedImage;         // 处理后的图片
+    QImage alphaChannelImage;      // Alpha通道图像
+    QString currentImagePath;      // 当前图片路径
 
-    // 分析功能
-    void analyzeTagStatistics();      // 标签统计
-    void analyzeCommonContacts();     // 共同联系人
-    void analyzeSocialRelation();     // 社交关联度
+    // 图片分析函数
+    void updateImageDisplay();                    // 更新图片显示
+    void extractAlphaChannel();                   // 提取Alpha通道
+    void updateImageInfo();                       // 更新图片信息
+    QString analyzeAlphaChannel() const;          // 分析Alpha通道
 
-    // 辅助函数
-    double calculateCommonContactRatio();      // 计算共同联系人比例
-    double calculateCitySimilarity();          // 计算城市相似度
-    double calculateTagSimilarity();           // 计算标签相似度
-    double calculateSocialRelationScore();     // 计算社交关联度得分
-    QString getRelationLevel(double score);    // 获取关系级别
-
-    // 统计函数
-    QMap<QString, int> countTags(const QList<Contact> &contacts);
-    QMap<QString, int> countCities(const QList<Contact> &contacts);
+    // 图像处理函数
+    QImage applyBayerDithering(const QImage &input);  // Bayer抖动
+    QImage applyPixelation(const QImage &input, int blockSize); // 像素化
 };
 
 #endif // ANALYSISWINDOW_H

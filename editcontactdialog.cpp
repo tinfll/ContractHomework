@@ -1,4 +1,4 @@
-#include "editcontactdialog.h"
+﻿#include "editcontactdialog.h"
 #include "ui_editcontactdialog.h"
 #include <QMessageBox>
 #include <QDebug>
@@ -34,8 +34,8 @@ void EditContactDialog::setContact(const Contact &contact)
     ui->addressEdit->setText(contact.address);
     ui->tagsEdit->setText(contact.tags.join(" "));
 
-    // 设置窗口标题包含联系人名字
-    setWindowTitle(QString("修改联系人 - %1").arg(contact.name));
+    // 设置窗口标题包含礼物名字
+    setWindowTitle(QString("修改礼物 - %1").arg(contact.name));
 }
 
 void EditContactDialog::onSaveButtonClicked()
@@ -52,11 +52,11 @@ void EditContactDialog::onSaveButtonClicked()
 
     // 验证必填字段
     if (name.isEmpty() || phone.isEmpty()) {
-        QMessageBox::warning(this, "输入错误", "姓名和电话不能为空！");
+        QMessageBox::warning(this, "输入错误", "姓名和信息不能为空！");
         return;
     }
 
-    // 更新联系人信息（保持原ID不变）
+    // 更新礼物信息（保持原ID不变）
     editedContact.name = name;
     editedContact.gender = gender;
     editedContact.age = age;
@@ -73,7 +73,7 @@ void EditContactDialog::onSaveButtonClicked()
         editedContact.tags.clear();
     }
 
-    qDebug() << "修改联系人:" << name << phone;
+    qDebug() << "修改礼物:" << name << phone;
 
     accept();  // 关闭对话框并返回Accepted
 }

@@ -8,7 +8,7 @@ bool Contact::parseFromString(const QString &line){
     QStringList parts = line.split(' ', Qt::SkipEmptyParts);
 
     if(parts.size() < 7){
-        qWarning() << "联系人数据格式错误:" << line;
+        qWarning() << "礼物数据格式错误:" << line;
         return false;
     }
 

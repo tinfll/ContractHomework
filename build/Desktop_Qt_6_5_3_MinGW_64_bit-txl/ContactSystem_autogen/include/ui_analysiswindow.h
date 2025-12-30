@@ -11,14 +11,13 @@
 
 #include <QtCore/QVariant>
 #include <QtWidgets/QApplication>
+#include <QtWidgets/QFrame>
 #include <QtWidgets/QGroupBox>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QSpacerItem>
-#include <QtWidgets/QTabWidget>
-#include <QtWidgets/QTextBrowser>
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QWidget>
 
@@ -30,162 +29,194 @@ public:
     QWidget *centralwidget;
     QVBoxLayout *verticalLayout;
     QLabel *titleLabel;
-    QGroupBox *fileInfoGroup;
+    QFrame *frame;
+    QGroupBox *imageDisplayGroup;
     QHBoxLayout *horizontalLayout;
-    QLabel *file1Label;
-    QLabel *file1NameLabel;
-    QSpacerItem *horizontalSpacer;
-    QLabel *file2Label;
-    QLabel *file2NameLabel;
-    QTabWidget *tabWidget;
-    QWidget *tagTab;
+    QGroupBox *originalImageGroup;
     QVBoxLayout *verticalLayout_2;
-    QTextBrowser *tagTextBrowser;
-    QWidget *commonTab;
+    QLabel *originalImageLabel;
+    QGroupBox *alphaChannelGroup;
     QVBoxLayout *verticalLayout_3;
-    QTextBrowser *commonTextBrowser;
-    QWidget *relationTab;
+    QLabel *alphaChannelLabel;
+    QGroupBox *imageInfoGroup;
     QVBoxLayout *verticalLayout_4;
-    QTextBrowser *relationTextBrowser;
-    QHBoxLayout *buttonLayout;
-    QSpacerItem *horizontalSpacer_2;
+    QLabel *imageInfoLabel;
+    QGroupBox *actionGroup;
+    QHBoxLayout *horizontalLayout_2;
+    QPushButton *applyEffectButton;
+    QPushButton *saveImageButton;
     QPushButton *backButton;
+    QSpacerItem *verticalSpacer;
 
     void setupUi(QMainWindow *AnalysisWindow)
     {
         if (AnalysisWindow->objectName().isEmpty())
             AnalysisWindow->setObjectName("AnalysisWindow");
-        AnalysisWindow->resize(800, 600);
+        AnalysisWindow->resize(900, 700);
+        AnalysisWindow->setStyleSheet(QString::fromUtf8("QMainWindow {\n"
+"    background-color: #f5f5f5;\n"
+"}\n"
+"QGroupBox {\n"
+"    font-weight: bold;\n"
+"    border: 2px solid #4a90e2;\n"
+"    border-radius: 8px;\n"
+"    margin-top: 10px;\n"
+"    padding-top: 10px;\n"
+"}\n"
+"QGroupBox::title {\n"
+"    subcontrol-origin: margin;\n"
+"    left: 10px;\n"
+"    padding: 0 5px 0 5px;\n"
+"    color: #4a90e2;\n"
+"}\n"
+"QLabel#imageInfoLabel {\n"
+"    background-color: white;\n"
+"    border: 1px solid #ddd;\n"
+"    border-radius: 4px;\n"
+"    padding: 5px;\n"
+"    font-family: 'Consolas', monospace;\n"
+"}\n"
+"QPushButton {\n"
+"    background-color: #4a90e2;\n"
+"    color: white;\n"
+"    border: none;\n"
+"    border-radius: 4px;\n"
+"    padding: 8px 16px;\n"
+"    font-weight: bold;\n"
+"}\n"
+"QPushButton:hover {\n"
+"    background-color: #3a7bc8;\n"
+"}\n"
+"QPushButton:pressed {\n"
+"    background-color: #2a6bb0;\n"
+"}\n"
+"QPushButton#backButton {\n"
+"    background-color: #6c757d;\n"
+"}\n"
+"QPushButton#backButton:hover {\n"
+"    background-color: #5a6268;\n"
+"}"));
         centralwidget = new QWidget(AnalysisWindow);
         centralwidget->setObjectName("centralwidget");
         verticalLayout = new QVBoxLayout(centralwidget);
         verticalLayout->setObjectName("verticalLayout");
         titleLabel = new QLabel(centralwidget);
         titleLabel->setObjectName("titleLabel");
-        QFont font;
-        font.setPointSize(18);
-        font.setBold(true);
-        titleLabel->setFont(font);
         titleLabel->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(titleLabel);
 
-        fileInfoGroup = new QGroupBox(centralwidget);
-        fileInfoGroup->setObjectName("fileInfoGroup");
-        horizontalLayout = new QHBoxLayout(fileInfoGroup);
+        frame = new QFrame(centralwidget);
+        frame->setObjectName("frame");
+        frame->setFrameShape(QFrame::HLine);
+        frame->setFrameShadow(QFrame::Sunken);
+
+        verticalLayout->addWidget(frame);
+
+        imageDisplayGroup = new QGroupBox(centralwidget);
+        imageDisplayGroup->setObjectName("imageDisplayGroup");
+        horizontalLayout = new QHBoxLayout(imageDisplayGroup);
         horizontalLayout->setObjectName("horizontalLayout");
-        file1Label = new QLabel(fileInfoGroup);
-        file1Label->setObjectName("file1Label");
-
-        horizontalLayout->addWidget(file1Label);
-
-        file1NameLabel = new QLabel(fileInfoGroup);
-        file1NameLabel->setObjectName("file1NameLabel");
-        file1NameLabel->setStyleSheet(QString::fromUtf8("color: #2196F3; font-weight: bold;"));
-
-        horizontalLayout->addWidget(file1NameLabel);
-
-        horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
-
-        horizontalLayout->addItem(horizontalSpacer);
-
-        file2Label = new QLabel(fileInfoGroup);
-        file2Label->setObjectName("file2Label");
-
-        horizontalLayout->addWidget(file2Label);
-
-        file2NameLabel = new QLabel(fileInfoGroup);
-        file2NameLabel->setObjectName("file2NameLabel");
-        file2NameLabel->setStyleSheet(QString::fromUtf8("color: #4CAF50; font-weight: bold;"));
-
-        horizontalLayout->addWidget(file2NameLabel);
-
-
-        verticalLayout->addWidget(fileInfoGroup);
-
-        tabWidget = new QTabWidget(centralwidget);
-        tabWidget->setObjectName("tabWidget");
-        tagTab = new QWidget();
-        tagTab->setObjectName("tagTab");
-        verticalLayout_2 = new QVBoxLayout(tagTab);
+        originalImageGroup = new QGroupBox(imageDisplayGroup);
+        originalImageGroup->setObjectName("originalImageGroup");
+        verticalLayout_2 = new QVBoxLayout(originalImageGroup);
         verticalLayout_2->setObjectName("verticalLayout_2");
-        tagTextBrowser = new QTextBrowser(tagTab);
-        tagTextBrowser->setObjectName("tagTextBrowser");
+        originalImageLabel = new QLabel(originalImageGroup);
+        originalImageLabel->setObjectName("originalImageLabel");
+        originalImageLabel->setMinimumSize(QSize(300, 300));
+        originalImageLabel->setMaximumSize(QSize(300, 300));
+        originalImageLabel->setStyleSheet(QString::fromUtf8("background-color: white;\n"
+"border: 2px dashed #ccc;\n"
+"border-radius: 4px;"));
+        originalImageLabel->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_2->addWidget(tagTextBrowser);
+        verticalLayout_2->addWidget(originalImageLabel);
 
-        tabWidget->addTab(tagTab, QString());
-        commonTab = new QWidget();
-        commonTab->setObjectName("commonTab");
-        verticalLayout_3 = new QVBoxLayout(commonTab);
+
+        horizontalLayout->addWidget(originalImageGroup);
+
+        alphaChannelGroup = new QGroupBox(imageDisplayGroup);
+        alphaChannelGroup->setObjectName("alphaChannelGroup");
+        verticalLayout_3 = new QVBoxLayout(alphaChannelGroup);
         verticalLayout_3->setObjectName("verticalLayout_3");
-        commonTextBrowser = new QTextBrowser(commonTab);
-        commonTextBrowser->setObjectName("commonTextBrowser");
+        alphaChannelLabel = new QLabel(alphaChannelGroup);
+        alphaChannelLabel->setObjectName("alphaChannelLabel");
+        alphaChannelLabel->setMinimumSize(QSize(300, 300));
+        alphaChannelLabel->setMaximumSize(QSize(300, 300));
+        alphaChannelLabel->setStyleSheet(QString::fromUtf8("background-color: #808080;\n"
+"border: 2px dashed #ccc;\n"
+"border-radius: 4px;"));
+        alphaChannelLabel->setAlignment(Qt::AlignCenter);
 
-        verticalLayout_3->addWidget(commonTextBrowser);
+        verticalLayout_3->addWidget(alphaChannelLabel);
 
-        tabWidget->addTab(commonTab, QString());
-        relationTab = new QWidget();
-        relationTab->setObjectName("relationTab");
-        verticalLayout_4 = new QVBoxLayout(relationTab);
+
+        horizontalLayout->addWidget(alphaChannelGroup);
+
+
+        verticalLayout->addWidget(imageDisplayGroup);
+
+        imageInfoGroup = new QGroupBox(centralwidget);
+        imageInfoGroup->setObjectName("imageInfoGroup");
+        verticalLayout_4 = new QVBoxLayout(imageInfoGroup);
         verticalLayout_4->setObjectName("verticalLayout_4");
-        relationTextBrowser = new QTextBrowser(relationTab);
-        relationTextBrowser->setObjectName("relationTextBrowser");
+        imageInfoLabel = new QLabel(imageInfoGroup);
+        imageInfoLabel->setObjectName("imageInfoLabel");
+        imageInfoLabel->setAlignment(Qt::AlignLeading);
 
-        verticalLayout_4->addWidget(relationTextBrowser);
+        verticalLayout_4->addWidget(imageInfoLabel);
 
-        tabWidget->addTab(relationTab, QString());
 
-        verticalLayout->addWidget(tabWidget);
+        verticalLayout->addWidget(imageInfoGroup);
 
-        buttonLayout = new QHBoxLayout();
-        buttonLayout->setObjectName("buttonLayout");
-        horizontalSpacer_2 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
+        actionGroup = new QGroupBox(centralwidget);
+        actionGroup->setObjectName("actionGroup");
+        horizontalLayout_2 = new QHBoxLayout(actionGroup);
+        horizontalLayout_2->setObjectName("horizontalLayout_2");
+        applyEffectButton = new QPushButton(actionGroup);
+        applyEffectButton->setObjectName("applyEffectButton");
 
-        buttonLayout->addItem(horizontalSpacer_2);
+        horizontalLayout_2->addWidget(applyEffectButton);
 
-        backButton = new QPushButton(centralwidget);
+        saveImageButton = new QPushButton(actionGroup);
+        saveImageButton->setObjectName("saveImageButton");
+
+        horizontalLayout_2->addWidget(saveImageButton);
+
+        backButton = new QPushButton(actionGroup);
         backButton->setObjectName("backButton");
-        backButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
-"    background-color: #6c757d;\n"
-"    color: white;\n"
-"    padding: 10px 20px;\n"
-"    border-radius: 5px;\n"
-"    font-weight: bold;\n"
-"    font-size: 12px;\n"
-"}\n"
-"QPushButton:hover {\n"
-"    background-color: #5a6268;\n"
-"}"));
 
-        buttonLayout->addWidget(backButton);
+        horizontalLayout_2->addWidget(backButton);
 
 
-        verticalLayout->addLayout(buttonLayout);
+        verticalLayout->addWidget(actionGroup);
+
+        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+
+        verticalLayout->addItem(verticalSpacer);
 
         AnalysisWindow->setCentralWidget(centralwidget);
 
         retranslateUi(AnalysisWindow);
-
-        tabWidget->setCurrentIndex(0);
-
 
         QMetaObject::connectSlotsByName(AnalysisWindow);
     } // setupUi
 
     void retranslateUi(QMainWindow *AnalysisWindow)
     {
-        AnalysisWindow->setWindowTitle(QCoreApplication::translate("AnalysisWindow", "\351\200\232\350\256\257\345\275\225\345\210\206\346\236\220", nullptr));
-        titleLabel->setText(QCoreApplication::translate("AnalysisWindow", "\351\200\232\350\256\257\345\275\225\345\257\271\346\257\224\345\210\206\346\236\220", nullptr));
-        fileInfoGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "\345\210\206\346\236\220\346\226\207\344\273\266", nullptr));
-        file1Label->setText(QCoreApplication::translate("AnalysisWindow", "\346\226\207\344\273\2661: ", nullptr));
-        file1NameLabel->setText(QCoreApplication::translate("AnalysisWindow", "\346\234\252\351\200\211\346\213\251", nullptr));
-        file2Label->setText(QCoreApplication::translate("AnalysisWindow", "\346\226\207\344\273\2662: ", nullptr));
-        file2NameLabel->setText(QCoreApplication::translate("AnalysisWindow", "\346\234\252\351\200\211\346\213\251", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(tagTab), QCoreApplication::translate("AnalysisWindow", "\360\237\223\212 \346\240\207\347\255\276\347\273\237\350\256\241", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(commonTab), QCoreApplication::translate("AnalysisWindow", "\360\237\224\227 \345\205\261\345\220\214\350\201\224\347\263\273\344\272\272", nullptr));
-        tabWidget->setTabText(tabWidget->indexOf(relationTab), QCoreApplication::translate("AnalysisWindow", "\342\235\244\357\270\217 \347\244\276\344\272\244\345\205\263\350\201\224\345\272\246", nullptr));
-        backButton->setText(QCoreApplication::translate("AnalysisWindow", "\350\277\224\345\233\236\344\270\273\347\225\214\351\235\242", nullptr));
+        AnalysisWindow->setWindowTitle(QCoreApplication::translate("AnalysisWindow", "\360\237\216\250 \347\224\237\346\227\245\345\233\276\347\211\207\345\210\206\346\236\220\345\267\245\345\235\212", nullptr));
+        titleLabel->setText(QCoreApplication::translate("AnalysisWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:20pt; font-weight:700; color:#4a90e2;\">\360\237\216\250 \347\224\237\346\227\245\345\233\276\347\211\207\345\210\206\346\236\220\345\267\245\345\235\212</span></p></body></html>", nullptr));
+        imageDisplayGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "\345\233\276\347\211\207\351\242\204\350\247\210", nullptr));
+        originalImageGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "\345\216\237\345\233\276", nullptr));
+        originalImageLabel->setText(QCoreApplication::translate("AnalysisWindow", "<\347\255\211\345\276\205\345\212\240\350\275\275\345\233\276\347\211\207>", nullptr));
+        alphaChannelGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "Alpha\351\200\232\351\201\223\357\274\210\351\200\217\346\230\216\351\200\232\351\201\223\357\274\211", nullptr));
+        alphaChannelLabel->setText(QCoreApplication::translate("AnalysisWindow", "<Alpha\351\200\232\351\201\223\351\242\204\350\247\210>", nullptr));
+        imageInfoGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "\345\233\276\347\211\207\344\277\241\346\201\257", nullptr));
+        imageInfoLabel->setText(QCoreApplication::translate("AnalysisWindow", "\346\226\207\344\273\266\350\267\257\345\276\204: \\n\345\260\272\345\257\270: \\n\346\240\274\345\274\217: \\nAlpha\351\200\232\351\201\223: \\n\351\200\217\346\230\216\345\272\246\347\273\237\350\256\241: ", nullptr));
+        actionGroup->setTitle(QCoreApplication::translate("AnalysisWindow", "\346\223\215\344\275\234", nullptr));
+        applyEffectButton->setText(QCoreApplication::translate("AnalysisWindow", "\342\234\250 \345\272\224\347\224\250\350\211\272\346\234\257\347\211\271\346\225\210", nullptr));
+        saveImageButton->setText(QCoreApplication::translate("AnalysisWindow", "\360\237\222\276 \344\277\235\345\255\230\345\233\276\347\211\207", nullptr));
+        backButton->setText(QCoreApplication::translate("AnalysisWindow", "\360\237\224\231 \350\277\224\345\233\236\344\270\273\347\225\214\351\235\242", nullptr));
     } // retranslateUi
 
 };

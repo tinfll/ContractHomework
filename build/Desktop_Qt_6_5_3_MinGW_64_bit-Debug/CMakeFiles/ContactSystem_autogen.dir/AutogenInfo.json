@@ -322,6 +322,12 @@
 			null
 		],
 		[
+			"C:/Users/tinf/Documents/ContactSystem/imageutils.h",
+			"MU",
+			"EWIEGA46WW/moc_imageutils.cpp",
+			null
+		],
+		[
 			"C:/Users/tinf/Documents/ContactSystem/mainwindow.h",
 			"MU",
 			"EWIEGA46WW/moc_mainwindow.cpp",
@@ -419,6 +425,7 @@
 			null
 		],
 		[ "C:/Users/tinf/Documents/ContactSystem/fontmanager.cpp", "MU", null ],
+		[ "C:/Users/tinf/Documents/ContactSystem/imageutils.cpp", "MU", null ],
 		[ "C:/Users/tinf/Documents/ContactSystem/main.cpp", "MU", null ],
 		[ "C:/Users/tinf/Documents/ContactSystem/mainwindow.cpp", "MU", null ]
 	],

@@ -55,28 +55,36 @@ public:
         label = new QLabel(centralwidget);
         label->setObjectName("label");
         QFont font;
-        font.setFamilies({QString::fromUtf8("Arial")});
+        font.setFamilies({QString::fromUtf8("Fusion Pixel 10px M zh_hant")});
         font.setPointSize(16);
         font.setBold(false);
         label->setFont(font);
+        label->setCursor(QCursor(Qt::ArrowCursor));
         label->setAlignment(Qt::AlignCenter);
 
         verticalLayout->addWidget(label);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer = new QSpacerItem(20, 30, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
 
         groupBox = new QGroupBox(centralwidget);
         groupBox->setObjectName("groupBox");
+        groupBox->setMinimumSize(QSize(0, 0));
+        QFont font1;
+        font1.setFamilies({QString::fromUtf8("Fusion Pixel 10px M zh_hant")});
+        groupBox->setFont(font1);
+        groupBox->setFlat(true);
         verticalLayout_2 = new QVBoxLayout(groupBox);
+        verticalLayout_2->setSpacing(6);
         verticalLayout_2->setObjectName("verticalLayout_2");
+        verticalLayout_2->setContentsMargins(16, 16, -1, -1);
         selectPersonButton = new QPushButton(groupBox);
         selectPersonButton->setObjectName("selectPersonButton");
-        QFont font1;
-        font1.setFamilies({QString::fromUtf8("FLOWERS")});
-        font1.setPointSize(12);
-        selectPersonButton->setFont(font1);
+        QFont font2;
+        font2.setFamilies({QString::fromUtf8("FLOWERS")});
+        font2.setPointSize(12);
+        selectPersonButton->setFont(font2);
         QIcon icon;
         icon.addFile(QString::fromUtf8("../../tinf/public/icon/footLogo.svg"), QSize(), QIcon::Normal, QIcon::Off);
         selectPersonButton->setIcon(icon);
@@ -86,27 +94,27 @@ public:
         compareButton = new QPushButton(groupBox);
         compareButton->setObjectName("compareButton");
         compareButton->setEnabled(true);
-        QFont font2;
-        font2.setFamilies({QString::fromUtf8("Fixedsys")});
-        font2.setPointSize(12);
-        compareButton->setFont(font2);
+        QFont font3;
+        font3.setFamilies({QString::fromUtf8("Fixedsys")});
+        font3.setPointSize(12);
+        compareButton->setFont(font3);
 
         verticalLayout_2->addWidget(compareButton);
 
 
         verticalLayout->addWidget(groupBox);
 
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer_2 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_2);
 
         exitButton = new QPushButton(centralwidget);
         exitButton->setObjectName("exitButton");
-        QFont font3;
-        font3.setFamilies({QString::fromUtf8("Fixedsys")});
-        font3.setPointSize(12);
-        font3.setBold(true);
-        exitButton->setFont(font3);
+        QFont font4;
+        font4.setFamilies({QString::fromUtf8("Fixedsys")});
+        font4.setPointSize(12);
+        font4.setBold(true);
+        exitButton->setFont(font4);
         exitButton->setStyleSheet(QString::fromUtf8("QPushButton {\n"
 "    background-color: #f44336;\n"
 "    color: white;\n"
@@ -143,10 +151,10 @@ public:
 #if QT_CONFIG(shortcut)
         actionExit->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Q", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label->setText(QCoreApplication::translate("MainWindow", "\346\210\221\346\230\257\344\273\237\350\231\271\347\232\204\347\213\227", nullptr));
-        groupBox->setTitle(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251\346\223\215\344\275\234", nullptr));
-        selectPersonButton->setText(QCoreApplication::translate("MainWindow", "ChooseYourSystem", nullptr));
-        compareButton->setText(QCoreApplication::translate("MainWindow", "AnalyseYourSystem", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "\350\226\207\343\201\256\345\256\207\345\256\231\357\274\201\357\274\201\357\274\201\357\274\201\357\274\201\357\274\201", nullptr));
+        groupBox->setTitle(QCoreApplication::translate("MainWindow", "\347\224\237\346\227\245\345\277\253\344\271\220", nullptr));
+        selectPersonButton->setText(QCoreApplication::translate("MainWindow", "ChooseYourGift", nullptr));
+        compareButton->setText(QCoreApplication::translate("MainWindow", "\351\233\250\350\226\207\347\224\273\347\224\273\347\232\204\345\203\217\347\264\240\346\225\260\345\255\227\345\212\240\345\267\245\345\267\245\345\235\212(?)", nullptr));
         exitButton->setText(QCoreApplication::translate("MainWindow", "\351\200\200\345\207\272\347\263\273\347\273\237", nullptr));
     } // retranslateUi
 

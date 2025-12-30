@@ -1,4 +1,4 @@
-#include "contactbookwindow.h"
+﻿#include "contactbookwindow.h"
 #include "addcontactdialog.h"
 #include "editcontactdialog.h"
 #include "ui_contactbookwindow.h"
@@ -63,10 +63,10 @@ void ContactBookWindow::setFilePath(const QString &filePath)
 
     QFileInfo fileInfo(filePath);
     QString fileName = fileInfo.fileName();
-    setWindowTitle("查看用户通讯录界面:" + fileName);
+    setWindowTitle("雨薇的礼物界面的说:" + fileName);
 
 
-    // 加载并显示联系人
+    // 加载并显示礼物
     loadContactsFromFile();
 
     filteredContacts = contacts;
@@ -79,13 +79,13 @@ void ContactBookWindow::loadContactsFromFile()
     contacts.clear();
 
     if (currentFilePath.isEmpty() || !QFile::exists(currentFilePath)) {
-        QMessageBox::warning(this, "错误", "文件不存在: " + currentFilePath);
+        QMessageBox::warning(this, "错误", "礼物不存在: " + currentFilePath);
         return;
     }
 
     QFile file(currentFilePath);
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, "错误", "无法打开文件: " + currentFilePath);
+        QMessageBox::warning(this, "错误", "无法打开礼物: " + currentFilePath);
         return;
     }
 
@@ -111,7 +111,7 @@ void ContactBookWindow::loadContactsFromFile()
     file.close();
 
     qDebug() << "从文件" << currentFilePath << "加载了" << successCount
-             << "个联系人(共" << lineCount << "行)";
+             << "个礼物(共" << lineCount << "行)";
 }
 
 //刷新界面/界面ui展示
@@ -121,7 +121,7 @@ void ContactBookWindow::updateDisplay()
     clearContactsDisplay();
 
     // 更新数量标签
-    ui->countLabel->setText(QString("共 %1 个联系人").arg(contacts.size()));
+    ui->countLabel->setText(QString("共 %1 个礼物").arg(contacts.size()));
 
     // 获取滚动区域的内容布局
     QVBoxLayout *contactsLayout = qobject_cast<QVBoxLayout*>(ui->scrollAreaWidgetContents->layout());
@@ -132,14 +132,14 @@ void ContactBookWindow::updateDisplay()
         delete spacer;
     }
 
-    // 如果没有过滤到任何联系人
+    // 如果没有过滤到任何礼物
     if (filteredContacts.isEmpty()) {
-        QLabel *emptyLabel = new QLabel("没有找到匹配的联系人");
+        QLabel *emptyLabel = new QLabel("没有找到匹配的礼物");
         emptyLabel->setAlignment(Qt::AlignCenter);
         emptyLabel->setStyleSheet("color: #999; font-style: italic; padding: 20px;");
         contactsLayout->addWidget(emptyLabel);
     }else {
-        // 添加过滤后的联系人按钮
+        // 添加过滤后的礼物按钮
         for (const Contact &contact : filteredContacts) {
             QWidget *contactRow = new QWidget();
             QHBoxLayout *rowLayout = new QHBoxLayout(contactRow);
@@ -149,7 +149,7 @@ void ContactBookWindow::updateDisplay()
 
 
 
-    // 添加联系人+管理按钮!!
+    // 添加礼物+管理按钮!!
     for (const Contact &contact : contacts) {
 
 
@@ -158,12 +158,12 @@ void ContactBookWindow::updateDisplay()
         rowLayout->setContentsMargins(2, 2, 2, 2);
         rowLayout->setSpacing(5);
 
-        // 联系人信息按钮（左边）
+        // 礼物信息按钮（左边）
         QPushButton *contactButton = new QPushButton(contact.getShortInfo());
         contactButton->setProperty("contactId", contact.id);
         contactButton->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-        // 设置联系人按钮样式
+        // 设置礼物按钮样式
         contactButton->setStyleSheet(
             "QPushButton {"
             "    text-align: left;"
@@ -215,9 +215,9 @@ void ContactBookWindow::updateDisplay()
     }
 
 
-    // 如果没有任何联系人，显示提示
+    // 如果没有任何礼物，显示提示
     if (contacts.isEmpty()) {
-        QLabel *emptyLabel = new QLabel("暂无联系人数据");
+        QLabel *emptyLabel = new QLabel("暂无礼物数据");
         emptyLabel->setAlignment(Qt::AlignCenter);
         emptyLabel->setStyleSheet("color: #999; font-style: italic;");
         contactsLayout->addWidget(emptyLabel);
@@ -287,7 +287,7 @@ void ContactBookWindow::saveContactsToFile()
 
     file.close();
 
-    qDebug() << "已保存" << contacts.size() << "个联系人到文件";
+    qDebug() << "已保存" << contacts.size() << "个礼物到文件";
 }
 
 //加数机制
@@ -313,13 +313,13 @@ void ContactBookWindow::showAddContactDialog(){
 
         updateDisplay();
 
-        QMessageBox::information(this, "成功", QString("已添加联系人: %1").arg(newContact.name));
+        QMessageBox::information(this, "成功", QString("已添加礼物: %1").arg(newContact.name));
 
     }
 
 }
 
-//查看联系人详情
+//查看礼物详情
 void ContactBookWindow::onContactButtonClicked()
 {
     QPushButton *button = qobject_cast<QPushButton*>(sender());
@@ -327,18 +327,18 @@ void ContactBookWindow::onContactButtonClicked()
 
     int contactId = button->property("contactId").toInt();
 
-    // 联系人
+    // 礼物
     for (const Contact &contact : contacts) {
         if (contact.id == contactId) {
             // 显示详细信息
             QString details = QString("编号: %1\n"
-                                      "姓名: %2\n"
-                                      "性别: %3\n"
-                                      "年龄: %4\n"
-                                      "电话: %5\n"
-                                      "城市: %6\n"
-                                      "单位/地址: %7\n"
-                                      "标签: %8")
+                                      "名字: %2\n"
+                                      "信息栏1: %3\n"
+                                      "信息栏2: %4\n"
+                                      "信息栏3: %5\n"
+                                      "信息栏4: %6\n"
+                                      "信息栏5: %7\n"
+                                      "信息栏6: %8")
                                   .arg(contact.id)
                                   .arg(contact.name)
                                   .arg(contact.gender)
@@ -349,7 +349,7 @@ void ContactBookWindow::onContactButtonClicked()
                                   .arg(contact.tags.join(", "));
 
             QMessageBox::information(this,
-                                     QString("联系人: %1").arg(contact.name),
+                                     QString("礼物: %1").arg(contact.name),
                                      details);
             break;
         }
@@ -364,7 +364,7 @@ void ContactBookWindow::onManageButtonClicked()
 
     int contactId = button->property("contactId").toInt();
 
-    // 查找联系人
+    // 查找礼物
     Contact *selectedContact = nullptr;
     int contactIndex = -1;
     for (int i = 0; i < contacts.size(); i++) {
@@ -376,7 +376,7 @@ void ContactBookWindow::onManageButtonClicked()
     }
 
     if (!selectedContact) {
-        QMessageBox::warning(this, "错误", "未找到联系人！");
+        QMessageBox::warning(this, "错误", "未找到礼物！");
         return;
     }
 
@@ -392,10 +392,10 @@ void ContactBookWindow::onManageButtonClicked()
     QAction *selectedAction = menu.exec(QCursor::pos());
 
     if (selectedAction == editAction) {
-        // 修改联系人
+        // 修改礼物
         showEditContactDialog(contactIndex);
     } else if (selectedAction == deleteAction) {
-        // 删除联系人
+        // 删除礼物
         deleteContact(contactIndex);
     }
 }
@@ -412,14 +412,14 @@ void ContactBookWindow::deleteContact(int index)
     // 确认删除
     QMessageBox::StandardButton reply;
     reply = QMessageBox::question(this, "确认删除",
-                                  QString("确定要删除联系人【%1】吗？").arg(contactName),
+                                  QString("确定要删除礼物【%1】吗？").arg(contactName),
                                   QMessageBox::Yes | QMessageBox::No);
 
     if (reply == QMessageBox::Yes) {
         // 从列表中删除
         contacts.removeAt(index);
 
-        // 重新编号所有联系人（确保ID连续）
+        // 重新编号所有礼物（确保ID连续）
         for (int i = 0; i < contacts.size(); i++) {
             contacts[i].id = i + 1;
         }
@@ -430,7 +430,7 @@ void ContactBookWindow::deleteContact(int index)
         // 刷新显示
         updateDisplay();
 
-        QMessageBox::information(this, "成功", QString("已删除联系人: %1").arg(contactName));
+        QMessageBox::information(this, "成功", QString("已删除礼物: %1").arg(contactName));
     }
 }
 
@@ -444,18 +444,18 @@ void ContactBookWindow::showEditContactDialog(int index)
     // 创建编辑对话框
     EditContactDialog dialog(this);
 
-    // 设置当前联系人信息
+    // 设置当前礼物信息
     dialog.setContact(contacts[index]);
 
     // 显示对话框
     if (dialog.exec() == QDialog::Accepted) {
-        // 获取修改后的联系人
+        // 获取修改后的礼物
         Contact updatedContact = dialog.getContact();
 
         // 保持原ID不变
         updatedContact.id = contacts[index].id;
 
-        // 更新列表中的联系人
+        // 更新列表中的礼物
         contacts[index] = updatedContact;
 
         // 保存到文件
@@ -465,9 +465,9 @@ void ContactBookWindow::showEditContactDialog(int index)
         updateDisplay();
 
         QMessageBox::information(this, "成功",
-                                 QString("已修改联系人: %1").arg(updatedContact.name));
+                                 QString("已修改礼物: %1").arg(updatedContact.name));
 
-        qDebug() << "联系人修改完成:" << updatedContact.name;
+        qDebug() << "礼物修改完成:" << updatedContact.name;
     }
 }
 
@@ -489,13 +489,13 @@ void ContactBookWindow::performSearch()
     // 如果没有找到结果
     if (filteredContacts.isEmpty()) {
         QMessageBox::information(this, "查询结果",
-                                 QString("没有找到匹配【%1】的联系人").arg(keyword));
+                                 QString("没有找到匹配【%1】的礼物").arg(keyword));
     }else {
         // 如果有结果，显示成功消息
         int searchType = ui->searchTypeComboBox->currentIndex();
         QString typeText = ui->searchTypeComboBox->currentText();
         QMessageBox::information(this, "查询成功",
-                                 QString("找到 %1 个匹配【%2】的联系人\n查询类型: %3")
+                                 QString("找到 %1 个匹配【%2】的礼物\n查询类型: %3")
                                      .arg(filteredContacts.size())
                                      .arg(keyword)
                                      .arg(typeText));
@@ -546,7 +546,7 @@ void ContactBookWindow::filterContacts()
 
     qDebug() << "查询完成，类型:" << searchType
              << "关键词:" << keyword
-             << "匹配到" << filteredContacts.size() << "个联系人";
+             << "匹配到" << filteredContacts.size() << "个礼物";
 }
 
 void ContactBookWindow::resetSearch()
@@ -555,13 +555,13 @@ void ContactBookWindow::resetSearch()
     ui->searchInput->clear();
     ui->searchTypeComboBox->setCurrentIndex(0);
 
-    // 显示所有联系人
+    // 显示所有礼物
     filteredContacts = contacts;
 
     // 更新显示
     updateDisplay();
 
-    qDebug() << "重置查询，显示所有" << contacts.size() << "个联系人";
+    qDebug() << "重置查询，显示所有" << contacts.size() << "个礼物";
 }
 
 
@@ -588,7 +588,7 @@ void ContactBookWindow::loadContractsFromFile()
     QString filePath = QCoreApplication::applicationDirPath();
 
     QString exeDir = ;
-    QString dataDir = exeDir + "/Data/";
+    QString picturesDir = exeDir + "/Data/";
 
 
 

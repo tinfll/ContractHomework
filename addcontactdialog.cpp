@@ -1,4 +1,4 @@
-#include "addcontactdialog.h"
+﻿#include "addcontactdialog.h"
 #include "ui_addcontactdialog.h"
 #include <QMessageBox>
 #include <QDebug>
@@ -9,7 +9,7 @@ AddContactDialog::AddContactDialog(QWidget *parent)
     , ui(new Ui::AddContactDialog)
 {
     ui->setupUi(this);
-    setWindowTitle("添加新联系人");
+    setWindowTitle("添加新礼物");
 
     connect(ui->okButton, &QPushButton::clicked, this, &AddContactDialog::onOkButtonClicked);
     connect(ui->cancelButton, &QPushButton::clicked, this, &AddContactDialog::onCancelButtonClicked);
@@ -34,11 +34,11 @@ void AddContactDialog::onOkButtonClicked()
 
     // 简单验证
     if (name.isEmpty() || phone.isEmpty()) {
-        QMessageBox::warning(this, "输入错误", "姓名和电话不能为空！");
+        QMessageBox::warning(this, "输入错误", "姓名和信息不能为空！");
         return;
     }
 
-    // 创建新联系人
+    // 创建新礼物
     newContact.name = name;
     newContact.gender = gender;
     newContact.age = age;
@@ -56,7 +56,7 @@ void AddContactDialog::onOkButtonClicked()
     // ID将在添加到列表时设置
     newContact.id = 0;
 
-    qDebug() << "新联系人信息:" << name << phone << city;
+    qDebug() << "新礼物信息:" << name << phone << city;
 
     accept();  // 关闭对话框并返回Accepted
 }

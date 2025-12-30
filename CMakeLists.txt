@@ -1,4 +1,4 @@
-﻿cmake_minimum_required(VERSION 3.16)
+cmake_minimum_required(VERSION 3.16)
 project(ContactSystem VERSION 1.0.0 LANGUAGES CXX)
 
 # ============= vcpkg 集成配置 =============
@@ -40,6 +40,7 @@ add_executable(${PROJECT_NAME}
     addcontactdialog.h addcontactdialog.cpp addcontactdialog.ui
     editcontactdialog.h editcontactdialog.cpp editcontactdialog.ui
     analysiswindow.h analysiswindow.cpp analysiswindow.ui
+    imageutils.h imageutils.cpp
 )
 
 # ============= 链接库 =============

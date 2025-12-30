@@ -173,7 +173,7 @@ public:
 
     void retranslateUi(QDialog *AddContactDialog)
     {
-        AddContactDialog->setWindowTitle(QCoreApplication::translate("AddContactDialog", "\346\267\273\345\212\240\350\201\224\347\263\273\344\272\272", nullptr));
+        AddContactDialog->setWindowTitle(QCoreApplication::translate("AddContactDialog", "\346\267\273\345\212\240\347\244\274\347\211\251", nullptr));
         label->setText(QCoreApplication::translate("AddContactDialog", "\345\247\223\345\220\215:", nullptr));
         label_2->setText(QCoreApplication::translate("AddContactDialog", "\346\200\247\345\210\253:", nullptr));
         genderEdit->setText(QCoreApplication::translate("AddContactDialog", "\345\245\263", nullptr));

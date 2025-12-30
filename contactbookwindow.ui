@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
  <class>ContactBookWindow</class>
  <widget class="QMainWindow" name="ContactBookWindow">
@@ -11,16 +11,17 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>通讯录</string>
+   <string>礼物</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QVBoxLayout" name="verticalLayout">
-
-    <!-- 查询区域 -->
     <item>
      <layout class="QHBoxLayout" name="searchLayout">
       <item>
        <widget class="QComboBox" name="searchTypeComboBox">
+        <property name="currentText">
+         <string>姓名</string>
+        </property>
         <item>
          <property name="text">
           <string>姓名</string>
@@ -66,8 +67,6 @@
       </item>
      </layout>
     </item>
-
-    <!-- 标题和添加按钮区域 -->
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
@@ -75,12 +74,11 @@
         <property name="font">
          <font>
           <pointsize>16</pointsize>
-          <weight>75</weight>
           <bold>true</bold>
          </font>
         </property>
         <property name="text">
-         <string>联系人列表</string>
+         <string>礼物列表</string>
         </property>
        </widget>
       </item>
@@ -100,18 +98,16 @@
       <item>
        <widget class="QPushButton" name="addContactButton">
         <property name="text">
-         <string>+ 添加联系人</string>
+         <string>+ 添加礼物(??)</string>
         </property>
        </widget>
       </item>
      </layout>
     </item>
-
-    <!-- 其他现有部分保持不变 -->
     <item>
      <widget class="QLabel" name="countLabel">
       <property name="text">
-       <string>共 0 个联系人</string>
+       <string>共 0 个礼物</string>
       </property>
       <property name="alignment">
        <set>Qt::AlignCenter</set>
@@ -129,7 +125,7 @@
          <x>0</x>
          <y>0</y>
          <width>580</width>
-         <height>350</height>
+         <height>365</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_2">

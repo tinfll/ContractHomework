@@ -35,8 +35,8 @@ private slots:
 private:
     Ui::ContactBookWindow *ui;
     QString currentFilePath;  // 存储完整路径
-    QList<Contact> contacts;  // 存储所有联系人
-    QList<Contact> filteredContacts;   // 新增：过滤后的联系人列表
+    QList<Contact> contacts;  // 存储所有礼物
+    QList<Contact> filteredContacts;   // 新增：过滤后的礼物列表
 
     //BASIC:
     void loadContactsFromFile();
@@ -44,7 +44,7 @@ private:
     void clearContactsDisplay();
 
     void saveContactsToFile();  // 保存到文件
-    void showAddContactDialog();  // 显示添加联系人对话框
+    void showAddContactDialog();  // 显示添加礼物对话框
 
     void deleteContact(int index);
     void showEditContactDialog(int index);

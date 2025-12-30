@@ -9,6 +9,8 @@
 #include <QCoreApplication>
 #include <QApplication>
 #include "contactbookwindow.h"
+#include "imageutils.h"
+#include <QPainter>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -63,10 +65,10 @@ void MainWindow::onSelectPersonButtonClicked()
 {
     qDebug() << "选择用户按钮被点击！";
     QString exeDir = QCoreApplication::applicationDirPath();
-    QString dataDir = exeDir + "/Data/";
+    QString picturesDir = exeDir + "/Data/";
 
     // 列出该目录下所有文件
-    QDir dir(dataDir);
+    QDir dir(picturesDir);
     /*if (dir.exists()) {
         qDebug() << "目录内容:";
         for (const QString& file : dir.entryList(QDir::Files)) {
@@ -90,7 +92,7 @@ void MainWindow::onSelectPersonButtonClicked()
     QString selectedFile = QInputDialog::getItem(this, "选择文件", "请选择用户文件", fileList, 0 , false, &ok);
 
     if(ok && !selectedFile.isEmpty()){
-        QString fullPath = dataDir + selectedFile;
+        QString fullPath = picturesDir + selectedFile;
 
         if(!QFile::exists(fullPath)){
             QMessageBox::warning(this, "错误",
@@ -99,7 +101,7 @@ void MainWindow::onSelectPersonButtonClicked()
         }
           qDebug() << "选择的文件:" << fullPath;
 
-        // 创建或显示通讯录窗口
+        // 创建或显示礼物窗口
         if (!contactBookWindow) {
             contactBookWindow = new ContactBookWindow(this);
         }
@@ -107,87 +109,161 @@ void MainWindow::onSelectPersonButtonClicked()
         // 设置文件名
         contactBookWindow->setFilePath(fullPath);
 
-        // 显示通讯录窗口，隐藏主窗口
+        // 显示礼物窗口，隐藏主窗口
         contactBookWindow->show();
         this->hide();
     }
 
 }
 
-//两个用户文件进行
+
 void MainWindow::onCompareButtonClicked(){
-    qDebug() << "compare";
+    qDebug() << "image";
 
     QString exeDir = QCoreApplication::applicationDirPath();
-    QString dataDir = exeDir + "/Data/";
+    QString picturesDir = exeDir + "/picturesDir/";
 
-    QDir dir(dataDir);
+    QDir dir(picturesDir);
 
+	//调用imageutils列出png文件
+
+
+    int needConvertCount = 0;
+    QStringList allImageFiles = dir.entryList(QDir::Files);
+    for (const QString& filename : allImageFiles) {
+        if (ImageUtils::needsConversion(picturesDir + filename)) {
+            needConvertCount++;
+        }
+    }
+
+
+    if (needConvertCount > 0) {
+        int reply = QMessageBox::question(this, "发现非PNG图片",
+            QString("在Pictures文件夹中发现 %1 个非PNG图片文件。\n\n"
+                "为了获得最佳处理效果（支持透明通道特效），\n"
+                "是否将它们转换为PNG格式？\n\n"
+                "转换后可以解锁完整的Alpha通道处理功能。")
+            .arg(needConvertCount),
+            QMessageBox::Yes | QMessageBox::No);
+
+    if (reply == QMessageBox::Yes) {
+        // 执行批量转换
+        int converted = ImageUtils::convertFolderToPng(picturesDir, false, false);
+
+        if (converted > 0) {
+            QMessageBox::information(this, "转换完成",
+                QString("已成功转换 %1 个文件为PNG格式。\n\n"
+                    "现在你可以享受完整的Alpha通道处理功能了！")
+                .arg(converted));
+        }
+    }
+}
 
     QStringList filters;
-    filters << "*.txt";
+
+    filters << "*.png";
     QStringList fileList = dir.entryList(filters, QDir::Files);
 
+    if (fileList.isEmpty()) {
+        QMessageBox::information(this, "图片库为空",
+            "生日图片库是空的！\n\n"
+            "你可以：\n"
+            "1. 将图片复制到程序目录的Pictures文件夹\n"
+            "2. 或者使用示例图片");
 
-    // 选择第一个文件
-    bool ok1;
-    QString selectedFile1 = QInputDialog::getItem(this,
-                                                  "选择第一个通讯录文件",
-                                                  "请选择第一个要比较的通讯录文件:",
+        // 添加一个示例图片
+        createSampleImage(picturesDir);
+
+        // 重新获取文件列表
+        fileList = dir.entryList(filters, QDir::Files);
+    }
+
+
+    bool ok;
+    QString selectedFile = QInputDialog::getItem(this,
+                                                  "选择第一个礼物文件",
+                                                  "请选择第一个要分析的礼物文件:",
                                                   fileList,
                                                   0,
                                                   false,
-                                                  &ok1);
+                                                  &ok);
 
-    if (!ok1 || selectedFile1.isEmpty()) {
+    if (!ok || selectedFile.isEmpty()) {
         return;  // 用户取消选择
     }
 
     // 从列表中移除已选的文件
     QStringList remainingFiles = fileList;
-    remainingFiles.removeAll(selectedFile1);
+    remainingFiles.removeAll(selectedFile);
+
 
     if (remainingFiles.isEmpty()) {
-        QMessageBox::information(this, "提示", "没有其他文件可供比较！");
+        QMessageBox::information(this, "提示", "没有其他文件可供分析！");
         return;
     }
 
-    // 选择第二个文件
-    bool ok2;
-    QString selectedFile2 = QInputDialog::getItem(this,
-                                                  "选择第二个通讯录",
-                                                  "请选择第二个要比较的通讯录:",
-                                                  remainingFiles,
-                                                  0,
-                                                  false,
-                                                  &ok2);
 
-    if (!ok2 || selectedFile2.isEmpty()) {
-        return;  // 用户取消选择
-    }
-
-    QString fullPath1 = dataDir + selectedFile1;
-    QString fullPath2 = dataDir + selectedFile2;
-
+    QString fullPath = picturesDir + selectedFile;
+    
     // 检查文件是否存在
-    if (!QFile::exists(fullPath1) || !QFile::exists(fullPath2)) {
+    if (!QFile::exists(fullPath)) {
         QMessageBox::warning(this, "错误", "选择的文件不存在！");
         return;
     }
 
-    qDebug() << "选择的文件1:" << fullPath1;
-    qDebug() << "选择的文件2:" << fullPath2;
+    qDebug() << "选择的文件:" << fullPath;
 
-    // 创建或显示分析窗口
+    // 创建或显示png图片窗口。
     if (!analysisWindow) {
         analysisWindow = new AnalysisWindow(this);
     }
 
-    // 设置要分析的文件
-    analysisWindow->setAnalysisFiles(fullPath1, fullPath2);
-
+    analysisWindow->loadAndDisplayImage(fullPath);
     // 显示分析窗口，隐藏主窗口
     analysisWindow->show();
     this->hide();
 
+}
+
+
+
+
+
+void MainWindow::createSampleImage(const QString& picturesDir)
+{
+    // 创建一个带Alpha通道的示例PNG图片
+    QImage sampleImage(400, 300, QImage::Format_ARGB32);
+    sampleImage.fill(Qt::transparent);  // 透明背景
+
+    QPainter painter(&sampleImage);
+    painter.setRenderHint(QPainter::Antialiasing);
+
+    // 画一个半透明的红色圆
+    painter.setBrush(QColor(255, 0, 0, 180));  // 半透明红色
+    painter.setPen(QPen(Qt::red, 2));
+    painter.drawEllipse(100, 50, 80, 80);
+
+    // 画一个带Alpha渐变的矩形
+    QLinearGradient gradient(50, 150, 350, 150);
+    gradient.setColorAt(0, QColor(0, 255, 0, 255));     // 不透明绿色
+    gradient.setColorAt(1, QColor(0, 255, 0, 50));      // 半透明绿色
+    painter.setBrush(gradient);
+    painter.setPen(QPen(Qt::green, 2));
+    painter.drawRect(50, 150, 300, 80);
+
+    // 添加文字
+    painter.setFont(QFont("Arial", 24, QFont::Bold));
+    painter.setPen(Qt::blue);
+    painter.drawText(80, 250, "Happy Birthday!");
+
+    // 添加Alpha通道提示
+    painter.setFont(QFont("Arial", 10));
+    painter.setPen(Qt::darkGray);
+    painter.drawText(10, 290, "示例图片 - 支持Alpha通道");
+
+    // 保存为PNG
+    QString filePath = picturesDir + "sample_birthday.png";
+    if (sampleImage.save(filePath, "PNG", 100)) {
+        qDebug() << "已创建示例图片:" << filePath;
+    }
 }

@@ -1,9 +1,6 @@
 C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen/EWIEGA46WW/moc_analysiswindow.cpp: C:/Users/tinf/Documents/ContactSystem/analysiswindow.h \
   C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/ContactSystem_autogen/moc_predefs.h \
-  C:/Qt1/6.5.3/mingw_64/include/QtCore/QMap \
-  C:/Qt1/6.5.3/mingw_64/include/QtCore/QSet \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/QString \
-  C:/Qt1/6.5.3/mingw_64/include/QtCore/QStringList \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/q20memory.h \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/q20type_traits.h \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/qalgorithms.h \
@@ -112,6 +109,7 @@ C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/
   C:/Qt1/6.5.3/mingw_64/include/QtCore/qvarlengtharray.h \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/qversiontagging.h \
   C:/Qt1/6.5.3/mingw_64/include/QtCore/qxptype_traits.h \
+  C:/Qt1/6.5.3/mingw_64/include/QtGui/QImage \
   C:/Qt1/6.5.3/mingw_64/include/QtGui/qaction.h \
   C:/Qt1/6.5.3/mingw_64/include/QtGui/qbitmap.h \
   C:/Qt1/6.5.3/mingw_64/include/QtGui/qbrush.h \
@@ -342,5 +340,4 @@ C:/Users/tinf/Documents/ContactSystem/build/Desktop_Qt_6_5_3_MinGW_64_bit-Debug/
   C:/Qt1/Tools/mingw1120_64/x86_64-w64-mingw32/include/sys/types.h \
   C:/Qt1/Tools/mingw1120_64/x86_64-w64-mingw32/include/time.h \
   C:/Qt1/Tools/mingw1120_64/x86_64-w64-mingw32/include/vadefs.h \
-  C:/Qt1/Tools/mingw1120_64/x86_64-w64-mingw32/include/wchar.h \
-  C:/Users/tinf/Documents/ContactSystem/Contact.h
+  C:/Qt1/Tools/mingw1120_64/x86_64-w64-mingw32/include/wchar.h

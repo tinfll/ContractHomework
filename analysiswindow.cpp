@@ -1,20 +1,37 @@
-#include "analysiswindow.h"
+﻿#include "analysiswindow.h"
 #include "ui_analysiswindow.h"
-#include <QFile>
-#include <QTextStream>
-#include <QDebug>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <cmath>
+#include <QCloseEvent>
+#include <QFileDialog>
+#include <QPainter>
+#include <QPixmap>
+#include <QDebug>
+#include <QRadioButton>      
+#include <QDialog>           
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QLabel>
+#include <QPushButton>
+#include <QDateTime>
 
-AnalysisWindow::AnalysisWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::AnalysisWindow)
+
+AnalysisWindow::AnalysisWindow(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::AnalysisWindow)
 {
     ui->setupUi(this);
 
-    // 连接返回按钮
-    connect(ui->backButton, &QPushButton::clicked, this, &AnalysisWindow::onBackButtonClicked);
+    // 连接按钮信号
+    connect(ui->applyEffectButton, &QPushButton::clicked,
+            this, &AnalysisWindow::onApplyEffectButtonClicked);
+    connect(ui->saveImageButton, &QPushButton::clicked,
+            this, &AnalysisWindow::onSaveImageButtonClicked);
+    connect(ui->backButton, &QPushButton::clicked,
+            this, &AnalysisWindow::onBackButtonClicked);
+
+    // 设置窗口标志
+    setWindowFlags(windowFlags() & ~Qt::WindowMaximizeButtonHint);
 }
 
 AnalysisWindow::~AnalysisWindow()
@@ -22,493 +39,369 @@ AnalysisWindow::~AnalysisWindow()
     delete ui;
 }
 
-//加载文件
-void AnalysisWindow::setAnalysisFiles(const QString &file1, const QString &file2)
+void AnalysisWindow::loadAndDisplayImage(const QString &imagePath)
 {
-    filePath1 = file1;
-    filePath2 = file2;
+    currentImagePath = imagePath;
 
-    // 从文件名提取显示名
-    QFileInfo info1(file1);
-    QFileInfo info2(file2);
-
-    QString title = QString("通讯录分析 - %1 vs %2")
-                        .arg(info1.fileName())
-                        .arg(info2.fileName());
-    setWindowTitle(title);
-
-    // 更新UI显示文件名
-    ui->file1NameLabel->setText(info1.fileName());
-    ui->file2NameLabel->setText(info2.fileName());
-
-    // 加载联系人数据
-    loadContactsFromFile(file1, contacts1);
-    loadContactsFromFile(file2, contacts2);
-
-    // 执行分析
-    analyzeTagStatistics();
-    analyzeCommonContacts();
-    analyzeSocialRelation();
-}
-
-//加载文件
-void AnalysisWindow::loadContactsFromFile(const QString &filePath, QList<Contact> &contacts)
-{
-    contacts.clear();
-
-    if (!QFile::exists(filePath)) {
-        QMessageBox::warning(this, "错误", "文件不存在: " + filePath);
+    // 加载图片
+    if (!originalImage.load(imagePath)) {
+        QMessageBox::warning(this, "错误",
+                             QString("无法加载图片：\n%1\n\n请检查文件格式和权限。")
+                                 .arg(imagePath));
         return;
     }
 
-    QFile file(filePath);
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        QMessageBox::warning(this, "错误", "无法打开文件: " + filePath);
+    // 确保图片是ARGB32格式（支持Alpha通道）
+    if (originalImage.format() != QImage::Format_ARGB32 &&
+        originalImage.format() != QImage::Format_ARGB32_Premultiplied) {
+        originalImage = originalImage.convertToFormat(QImage::Format_ARGB32);
+    }
+
+    // 初始化processedImage
+    processedImage = originalImage;
+
+    // 更新显示
+    updateImageDisplay();
+
+    // 提取并显示Alpha通道
+    extractAlphaChannel();
+
+    // 更新图片信息
+    updateImageInfo();
+
+    qDebug() << "图片加载成功:" << imagePath
+             << "尺寸:" << originalImage.size()
+             << "格式: ARGB32"
+             << "有Alpha通道:" << originalImage.hasAlphaChannel();
+}
+
+void AnalysisWindow::updateImageDisplay()
+{
+    if (processedImage.isNull()) {
+        ui->originalImageLabel->setText("<图片加载失败>");
         return;
     }
 
-    QTextStream in(&file);
-    int lineCount = 0;
-    int successCount = 0;
+    // 缩放图片以适应标签，保持纵横比
+    QPixmap pixmap = QPixmap::fromImage(processedImage);
 
-    while (!in.atEnd()) {
-        lineCount++;
-        QString line = in.readLine().trimmed();
-        if (line.isEmpty()) continue;
 
-        Contact contact;
-        if (contact.parseFromString(line)) {
-            contacts.append(contact);
-            successCount++;
+    QSize labelSize = ui->originalImageLabel->size();
+    QPixmap scaledPixmap = pixmap.scaled(labelSize,
+                                         Qt::KeepAspectRatio,
+                                         Qt::SmoothTransformation);
+
+    ui->originalImageLabel->setPixmap(scaledPixmap);
+    ui->originalImageLabel->setAlignment(Qt::AlignCenter);
+}
+
+
+void AnalysisWindow::extractAlphaChannel()
+{
+    if (originalImage.isNull()) return;
+
+    // 创建灰度图像来显示Alpha通道
+    alphaChannelImage = QImage(originalImage.size(), QImage::Format_Grayscale8);
+
+    for (int y = 0; y < originalImage.height(); ++y) {
+        const QRgb *srcLine = reinterpret_cast<const QRgb*>(originalImage.scanLine(y));
+        uchar *dstLine = alphaChannelImage.scanLine(y);
+
+        for (int x = 0; x < originalImage.width(); ++x) {
+            // 提取Alpha值（0-255）作为灰度值
+            dstLine[x] = qAlpha(srcLine[x]);
         }
     }
 
-    file.close();
+    // 显示Alpha通道
+    QPixmap alphaPixmap = QPixmap::fromImage(alphaChannelImage);
+    QSize labelSize = ui->alphaChannelLabel->size();
+    QPixmap scaledAlphaPixmap = alphaPixmap.scaled(labelSize,
+                                                   Qt::KeepAspectRatio,
+                                                   Qt::SmoothTransformation);
 
-    qDebug() << "从" << filePath << "加载了" << successCount << "个联系人(共" << lineCount << "行)";
+    ui->alphaChannelLabel->setPixmap(scaledAlphaPixmap);
+    ui->alphaChannelLabel->setAlignment(Qt::AlignCenter);
+
+    // 添加Alpha通道说明
+    QString alphaInfo = analyzeAlphaChannel();
+    ui->alphaChannelLabel->setToolTip(alphaInfo);
 }
 
-// 统计标签
-QMap<QString, int> AnalysisWindow::countTags(const QList<Contact> &contacts)
-{
-    QMap<QString, int> tagCount;
 
-    for (const Contact &contact : contacts) {
-        for (const QString &tag : contact.tags) {
-            if (!tag.isEmpty()) {
-                tagCount[tag]++;
+void AnalysisWindow::updateImageInfo()
+{
+    if (originalImage.isNull()) return;
+
+    QFileInfo fileInfo(currentImagePath);
+
+    QString infoText = QString(
+                           "📁 文件信息:\n"
+                           "  文件名: %1\n"
+                           "  路径: %2\n"
+                           "  大小: %3 KB\n\n"
+                           "🖼️ 图片信息:\n"
+                           "  尺寸: %4 × %5 像素\n"
+                           "  格式: PNG (ARGB32)\n"
+                           "  颜色深度: 32位\n"
+                           "  Alpha通道: %6\n\n"
+                           "🔍 Alpha分析:\n%7")
+                           .arg(fileInfo.fileName())
+                           .arg(fileInfo.path())
+                           .arg(fileInfo.size() / 1024.0, 0, 'f', 1)
+                           .arg(originalImage.width())
+                           .arg(originalImage.height())
+                           .arg(originalImage.hasAlphaChannel() ? "✅ 支持" : "❌ 不支持")
+                           .arg(analyzeAlphaChannel());
+
+    ui->imageInfoLabel->setText(infoText);
+}
+
+QString AnalysisWindow::analyzeAlphaChannel() const
+{
+    if (originalImage.isNull() || !originalImage.hasAlphaChannel()) {
+        return "  此图片没有Alpha通道（透明通道）。";
+    }
+
+    int transparentPixels = 0;
+    int semiTransparentPixels = 0;
+    int opaquePixels = 0;
+    int totalPixels = originalImage.width() * originalImage.height();
+
+    for (int y = 0; y < originalImage.height(); ++y) {
+        const QRgb *scanLine = reinterpret_cast<const QRgb*>(originalImage.scanLine(y));
+        for (int x = 0; x < originalImage.width(); ++x) {
+            int alpha = qAlpha(scanLine[x]);
+
+            if (alpha == 0) {
+                transparentPixels++;      // 完全透明
+            } else if (alpha < 255) {
+                semiTransparentPixels++;  // 半透明
+            } else {
+                opaquePixels++;           // 完全不透明
             }
         }
     }
 
-    return tagCount;
+    double transparentPercent = (transparentPixels * 100.0) / totalPixels;
+    double semiPercent = (semiTransparentPixels * 100.0) / totalPixels;
+    double opaquePercent = (opaquePixels * 100.0) / totalPixels;
+
+    return QString(
+               "  🔹 完全透明: %1 像素 (%2%)\n"
+               "  🔸 半透明: %3 像素 (%4%)\n"
+               "  🔹 不透明: %5 像素 (%6%)\n"
+               "  📊 总像素: %7")
+        .arg(transparentPixels)
+        .arg(transparentPercent, 0, 'f', 1)
+        .arg(semiTransparentPixels)
+        .arg(semiPercent, 0, 'f', 1)
+        .arg(opaquePixels)
+        .arg(opaquePercent, 0, 'f', 1)
+        .arg(totalPixels);
 }
 
-// 统计城市
-QMap<QString, int> AnalysisWindow::countCities(const QList<Contact> &contacts)
+void AnalysisWindow::onApplyEffectButtonClicked()
 {
-    QMap<QString, int> cityCount;
-
-    for (const Contact &contact : contacts) {
-        if (!contact.city.isEmpty()) {
-            cityCount[contact.city]++;
-        }
+    if (originalImage.isNull()) {
+        QMessageBox::warning(this, "错误", "请先加载图片！");
+        return;
     }
 
-    return cityCount;
+    // 弹出效果选择对话框
+    QDialog effectDialog(this);
+    effectDialog.setWindowTitle("选择艺术特效");
+    effectDialog.setFixedSize(400, 300);
+
+    QVBoxLayout *layout = new QVBoxLayout(&effectDialog);
+
+    QLabel *titleLabel = new QLabel("🎨 选择要应用的艺术特效");
+    titleLabel->setAlignment(Qt::AlignCenter);
+    titleLabel->setStyleSheet("font-size: 16px; font-weight: bold; margin: 10px;");
+    layout->addWidget(titleLabel);
+
+    // 效果选项
+    QRadioButton *bayerButton = new QRadioButton("Bayer抖动（复古印刷效果）");
+    QRadioButton *pixelButton = new QRadioButton("像素化马赛克");
+    QRadioButton *alphaEdgeButton = new QRadioButton("Alpha边缘发光");
+    QRadioButton *colorSeparationButton = new QRadioButton("色彩分离");
+
+    bayerButton->setChecked(true);
+
+    layout->addWidget(bayerButton);
+    layout->addWidget(pixelButton);
+    layout->addWidget(alphaEdgeButton);
+    layout->addWidget(colorSeparationButton);
+
+    layout->addSpacing(20);
+
+    QPushButton *applyBtn = new QPushButton("✨ 应用特效");
+    QPushButton *cancelBtn = new QPushButton("取消");
+
+    QHBoxLayout *btnLayout = new QHBoxLayout();
+    btnLayout->addWidget(applyBtn);
+    btnLayout->addWidget(cancelBtn);
+    layout->addLayout(btnLayout);
+
+    // 连接按钮
+    connect(applyBtn, &QPushButton::clicked, [&](){
+        if (bayerButton->isChecked()) {
+            processedImage = applyBayerDithering(originalImage);
+        } else if (pixelButton->isChecked()) {
+            processedImage = applyPixelation(originalImage, 10);
+        } else if (alphaEdgeButton->isChecked()) {
+            // 这里可以添加Alpha边缘发光效果
+            QMessageBox::information(this, "即将推出", "Alpha边缘发光效果正在开发中...");
+            return;
+        } else if (colorSeparationButton->isChecked()) {
+            // 这里可以添加色彩分离效果
+            QMessageBox::information(this, "即将推出", "色彩分离效果正在开发中...");
+            return;
+        }
+
+        updateImageDisplay();
+        effectDialog.accept();
+
+        QMessageBox::information(this, "成功", "特效已应用！\n点击'保存图片'可以保存处理后的效果。");
+    });
+
+    connect(cancelBtn, &QPushButton::clicked, [&](){
+        effectDialog.reject();
+    });
+
+    effectDialog.exec();
 }
 
-// 分析标签统计
-void AnalysisWindow::analyzeTagStatistics()
+void AnalysisWindow::onSaveImageButtonClicked()
 {
-    QString html;
+    if (processedImage.isNull()) {
+        QMessageBox::warning(this, "错误", "没有可保存的图片！");
+        return;
+    }
 
-    // 文件1的标签统计
-    QMap<QString, int> tagCount1 = countTags(contacts1);
-    html += QString("<h3> %1 的标签统计 (%2 个联系人)</h3>")
-                .arg(ui->file1NameLabel->text())
-                .arg(contacts1.size());
+    QString defaultPath = QCoreApplication::applicationDirPath() +
+                          "/Outputs/birthday_processed_" +
+                          QDateTime::currentDateTime().toString("yyyyMMdd_hhmmss") +
+                          ".png";
 
-    if (tagCount1.isEmpty()) {
-        html += "<p><i>没有标签数据</i></p>";
+    QString savePath = QFileDialog::getSaveFileName(this,
+                                                    "保存处理后的图片",
+                                                    defaultPath,
+                                                    "PNG图片 (*.png);;JPEG图片 (*.jpg);;所有文件 (*.*)");
 
+    if (savePath.isEmpty()) return;
+
+    bool success = processedImage.save(savePath);
+
+    if (success) {
+        QMessageBox::information(this, "成功",
+                                 QString("图片已保存到:\n%1\n\n"
+                                         "尺寸: %2×%3\n"
+                                         "格式: PNG")
+                                     .arg(savePath)
+                                     .arg(processedImage.width())
+                                     .arg(processedImage.height()));
     } else {
-        html += "<table border='1' cellpadding='5' style='border-collapse: collapse; width: 100%;'>";
-        html += "<tr style='background-color: #e3f2fd;'><th>标签</th><th>数量</th><th>比例</th></tr>";
-
-        for (auto it = tagCount1.begin(); it != tagCount1.end(); ++it) {
-            double percentage = (double)it.value() / contacts1.size() * 100;
-            html += QString("<tr><td>%1</td><td align='center'>%2</td><td align='center'>%3%</td></tr>")
-                        .arg(it.key())
-                        .arg(it.value())
-                        .arg(QString::number(percentage, 'f', 1));
-        }
-        html += "</table>";
+        QMessageBox::warning(this, "错误", "保存失败！");
     }
-
-    // 文件2的标签统计
-    QMap<QString, int> tagCount2 = countTags(contacts2);
-    html += QString("<br><hr><h3> %1 的标签统计 (%2 个联系人)</h3>")
-                .arg(ui->file2NameLabel->text())
-                .arg(contacts2.size());
-
-    if (tagCount2.isEmpty()) {
-        html += "<p><i>没有标签数据</i></p>";
-    } else {
-        html += "<table border='1' cellpadding='5' style='border-collapse: collapse; width: 100%;'>";
-        html += "<tr style='background-color: #e8f5e9;'><th>标签</th><th>数量</th><th>比例</th></tr>";
-
-        for (auto it = tagCount2.begin(); it != tagCount2.end(); ++it) {
-            double percentage = (double)it.value() / contacts2.size() * 100;
-            html += QString("<tr><td>%1</td><td align='center'>%2</td><td align='center'>%3%</td></tr>")
-                        .arg(it.key())
-                        .arg(it.value())
-                        .arg(QString::number(percentage, 'f', 1));
-        }
-        html += "</table>";
-    }
-
-    // 城市统计
-    QMap<QString, int> cityCount1 = countCities(contacts1);
-    QMap<QString, int> cityCount2 = countCities(contacts2);
-
-    html += "<br><hr><h3> 城市分布统计</h3>";
-
-    html += QString("<p><b>%1 的城市分布:</b> ").arg(ui->file1NameLabel->text());
-    for (auto it = cityCount1.begin(); it != cityCount1.end(); ++it) {
-        html += QString("%1(%2人) ").arg(it.key()).arg(it.value());
-    }
-    html += "</p>";
-
-    html += QString("<p><b>%1 的城市分布:</b> ").arg(ui->file2NameLabel->text());
-    for (auto it = cityCount2.begin(); it != cityCount2.end(); ++it) {
-        html += QString("%1(%2人) ").arg(it.key()).arg(it.value());
-    }
-    html += "</p>";
-
-    ui->tagTextBrowser->setHtml(html);
-}
-
-// 分析共同联系人
-void AnalysisWindow::analyzeCommonContacts()
-{
-    QString html;
-
-    // 查找共同联系人（基于姓名和电话）
-    QList<Contact> commonContacts;
-
-    for (const Contact &contact1 : contacts1) {
-        for (const Contact &contact2 : contacts2) {
-            // 如果姓名和电话相同，认为是同一人
-            if (contact1.name == contact2.name && contact1.phone == contact2.phone) {
-                commonContacts.append(contact1);
-                break;
-            }
-        }
-    }
-
-    html += QString("<h3>🔗 共同联系人分析</h3>");
-    html += QString("<p><b>%1</b>: %2 个联系人</p>")
-                .arg(ui->file1NameLabel->text())
-                .arg(contacts1.size());
-    html += QString("<p><b>%1</b>: %2 个联系人</p>")
-                .arg(ui->file2NameLabel->text())
-                .arg(contacts2.size());
-    html += QString("<p><b>共同联系人</b>: %1 个</p>")
-                .arg(commonContacts.size());
-
-    if (commonContacts.isEmpty()) {
-        html += "<p><i>没有共同联系人</i></p>";
-    } else {
-        html += "<table border='1' cellpadding='5' style='border-collapse: collapse; width: 100%;'>";
-        html += "<tr style='background-color: #fff3cd;'>"
-                "<th>姓名</th><th>电话</th><th>城市</th>"
-                "<th>标签 (文件1)</th><th>标签 (文件2)</th>"
-                "</tr>";
-
-        for (const Contact &commonContact : commonContacts) {
-            // 找到文件2中的对应联系人
-            Contact contact2;
-            for (const Contact &c2 : contacts2) {
-                if (c2.name == commonContact.name && c2.phone == commonContact.phone) {
-                    contact2 = c2;
-                    break;
-                }
-            }
-
-            html += QString("<tr>"
-                            "<td>%1</td>"
-                            "<td>%2</td>"
-                            "<td>%3</td>"
-                            "<td>%4</td>"
-                            "<td>%5</td>"
-                            "</tr>")
-                        .arg(commonContact.name)
-                        .arg(commonContact.phone)
-                        .arg(commonContact.city)
-                        .arg(commonContact.tags.join(", "))
-                        .arg(contact2.tags.join(", "));
-        }
-        html += "</table>";
-    }
-
-    ui->commonTextBrowser->setHtml(html);
-}
-
-// 计算共同联系人比例
-double AnalysisWindow::calculateCommonContactRatio()
-{
-    int commonCount = 0;
-
-    for (const Contact &contact1 : contacts1) {
-        for (const Contact &contact2 : contacts2) {
-            if (contact1.name == contact2.name && contact1.phone == contact2.phone) {
-                commonCount++;
-                break;
-            }
-        }
-    }
-
-    if (contacts1.size() == 0) return 0.0;
-    return (double)commonCount / contacts1.size();
-}
-
-// 计算城市相似度
-double AnalysisWindow::calculateCitySimilarity()
-{
-    QMap<QString, int> cityCount1 = countCities(contacts1);
-    QMap<QString, int> cityCount2 = countCities(contacts2);
-
-    int commonCityCount = 0;
-
-    // 对每个城市，取两个文件中数量的最小值
-    for (auto it = cityCount1.begin(); it != cityCount1.end(); ++it) {
-        QString city = it.key();
-        int count1 = it.value();
-        int count2 = cityCount2.value(city, 0);
-
-        commonCityCount += qMin(count1, count2);
-    }
-
-    if (contacts1.size() == 0) return 0.0;
-    return (double)commonCityCount / contacts1.size();
-}
-
-// 计算标签相似度
-double AnalysisWindow::calculateTagSimilarity()
-{
-    int commonWithTags = 0;
-
-    // 对于每个共同联系人，检查是否有至少一个共同标签
-    for (const Contact &contact1 : contacts1) {
-        // 检查是否是共同联系人
-        bool isCommon = false;
-        Contact contact2;
-
-        for (const Contact &c2 : contacts2) {
-            if (contact1.name == c2.name && contact1.phone == c2.phone) {
-                isCommon = true;
-                contact2 = c2;
-                break;
-            }
-        }
-
-        if (isCommon) {
-            // 检查是否有共同标签
-            bool hasCommonTag = false;
-            for (const QString &tag1 : contact1.tags) {
-                if (contact2.tags.contains(tag1)) {
-                    hasCommonTag = true;
-                    break;
-                }
-            }
-
-            if (hasCommonTag) {
-                commonWithTags++;
-            }
-        }
-    }
-
-    if (contacts1.size() == 0) return 0.0;
-    return (double)commonWithTags / contacts1.size();
-}
-
-// 计算社交关联度得分
-double AnalysisWindow::calculateSocialRelationScore()
-{
-    double commonRatio = calculateCommonContactRatio();
-    double citySimilarity = calculateCitySimilarity();
-    double tagSimilarity = calculateTagSimilarity();
-
-    qDebug() << "计算得分:";
-    qDebug() << "  共同联系人比例:" << commonRatio;
-    qDebug() << "  城市相似度:" << citySimilarity;
-    qDebug() << "  标签相似度:" << tagSimilarity;
-
-    double score = 0.5 * commonRatio + 0.3 * citySimilarity + 0.2 * tagSimilarity;
-    return score;
-}
-
-// 获取关系级别
-QString AnalysisWindow::getRelationLevel(double score)
-{
-    if (score >= 0.8) return "非常亲密";
-    else if (score >= 0.6) return "比较亲密";
-    else if (score >= 0.4) return "一般关系";
-    else if (score >= 0.2) return "较弱关系";
-    else return "几乎无关";
-}
-
-// 分析社交关联度
-void AnalysisWindow::analyzeSocialRelation()
-{
-    QString html;
-
-    // A对B的关联度
-    double scoreAB = calculateSocialRelationScore();
-    QString levelAB = getRelationLevel(scoreAB);
-
-    // 交换contacts1和contacts2计算B对A的关联度
-    qSwap(contacts1, contacts2);
-    double scoreBA = calculateSocialRelationScore();
-    QString levelBA = getRelationLevel(scoreBA);
-    qSwap(contacts1, contacts2); // 恢复原状
-
-    // 获取详细数据用于显示
-    double commonRatio = calculateCommonContactRatio();
-    double citySimilarity = calculateCitySimilarity();
-    double tagSimilarity = calculateTagSimilarity();
-
-    QMap<QString, int> cityCount1 = countCities(contacts1);
-    QMap<QString, int> cityCount2 = countCities(contacts2);
-
-    html += "<h3>社交关联度分析</h3>";
-
-    // 详细计算过程
-    html += QString("<h4> %1 → %2 的计算过程:</h4>")
-                .arg(ui->file1NameLabel->text())
-                .arg(ui->file2NameLabel->text());
-
-    html += "<table border='1' cellpadding='5' style='border-collapse: collapse; width: 80%;'>";
-    html += "<tr style='background-color: #f8f9fa;'>"
-            "<th>计算项目</th><th>计算公式</th><th>结果</th><th>权重</th><th>加权值</th>"
-            "</tr>";
-
-    html += QString("<tr>"
-                    "<td>共同联系人比例</td>"
-                    "<td>共同联系人数 / A联系人数</td>"
-                    "<td align='center'>%1 / %2 = %3</td>"
-                    "<td align='center'>0.5</td>"
-                    "<td align='center'>%4</td>"
-                    "</tr>")
-                .arg(int(commonRatio * contacts1.size()))
-                .arg(contacts1.size())
-                .arg(QString::number(commonRatio, 'f', 3))
-                .arg(QString::number(0.5 * commonRatio, 'f', 3));
-
-    html += QString("<tr>"
-                    "<td>城市相似度</td>"
-                    "<td>共同城市联系人数 / A联系人数</td>"
-                    "<td align='center'>%1 / %2 = %3</td>"
-                    "<td align='center'>0.3</td>"
-                    "<td align='center'>%4</td>"
-                    "</tr>")
-                .arg(int(citySimilarity * contacts1.size()))
-                .arg(contacts1.size())
-                .arg(QString::number(citySimilarity, 'f', 3))
-                .arg(QString::number(0.3 * citySimilarity, 'f', 3));
-
-    html += QString("<tr>"
-                    "<td>标签相似度</td>"
-                    "<td>有共同标签人数 / A联系人数</td>"
-                    "<td align='center'>%1 / %2 = %3</td>"
-                    "<td align='center'>0.2</td>"
-                    "<td align='center'>%4</td>"
-                    "</tr>")
-                .arg(int(tagSimilarity * contacts1.size()))
-                .arg(contacts1.size())
-                .arg(QString::number(tagSimilarity, 'f', 3))
-                .arg(QString::number(0.2 * tagSimilarity, 'f', 3));
-
-    html += QString("<tr style='background-color: #e8f5e9; font-weight: bold;'>"
-                    "<td colspan='4' align='right'>总得分</td>"
-                    "<td align='center'>%1</td>"
-                    "</tr>")
-                .arg(QString::number(scoreAB, 'f', 3));
-    html += "</table>";
-
-    // 城市分布详情
-    html += "<h4>城市分布详情:</h4>";
-    html += QString("<p><b>%1:</b> ").arg(ui->file1NameLabel->text());
-    for (auto it = cityCount1.begin(); it != cityCount1.end(); ++it) {
-        html += QString("%1(%2人) ").arg(it.key()).arg(it.value());
-    }
-    html += "</p>";
-
-    html += QString("<p><b>%1:</b> ").arg(ui->file2NameLabel->text());
-    for (auto it = cityCount2.begin(); it != cityCount2.end(); ++it) {
-        html += QString("%1(%2人) ").arg(it.key()).arg(it.value());
-    }
-    html += "</p>";
-
-    // 结果显示
-    html += "<br><hr><h3>分析结果</h3>";
-
-    html += "<table border='1' cellpadding='10' style='border-collapse: collapse; width: 100%;'>";
-    html += "<tr style='background-color: #e3f2fd;'>"
-            "<th>关系方向</th><th>关联度得分</th><th>关系级别</th><th>强度范围</th>"
-            "</tr>";
-
-    html += QString("<tr>"
-                    "<td><b>%1 → %2</b></td>"
-                    "<td align='center' style='font-size: 24px; color: #2196F3;'>%3</td>"
-                    "<td align='center' style='font-size: 18px;'>%4</td>"
-                    "<td align='center'>0.8-1.0: 非常亲密<br>"
-                    "0.6-0.8: 比较亲密<br>"
-                    "0.4-0.6: 一般关系<br>"
-                    "0.2-0.4: 较弱关系<br>"
-                    "0.0-0.2: 几乎无关</td>"
-                    "</tr>")
-                .arg(ui->file1NameLabel->text())
-                .arg(ui->file2NameLabel->text())
-                .arg(QString::number(scoreAB, 'f', 3))
-                .arg(levelAB);
-
-    html += QString("<tr>"
-                    "<td><b>%1 → %2</b></td>"
-                    "<td align='center' style='font-size: 24px; color: #4CAF50;'>%3</td>"
-                    "<td align='center' style='font-size: 18px;'>%4</td>"
-                    "<td align='center'>同上</td>"
-                    "</tr>")
-                .arg(ui->file2NameLabel->text())
-                .arg(ui->file1NameLabel->text())
-                .arg(QString::number(scoreBA, 'f', 3))
-                .arg(levelBA);
-
-    html += "</table>";
-
-    // 总结
-    html += "<br><hr><h4>💡 分析总结:</h4>";
-    html += QString("<p>根据分析，%1 和 %2 之间的社交关系为 <b>%3</b>。</p>")
-                .arg(ui->file1NameLabel->text())
-                .arg(ui->file2NameLabel->text())
-                .arg(scoreAB > scoreBA ? levelAB : levelBA);
-
-    if (scoreAB >= 0.6 || scoreBA >= 0.6) {
-        html += "<p style='color: #d32f2f;'>提示: Best Friend!</p>";
-    } else if (scoreAB >= 0.4 || scoreBA >= 0.4) {
-        html += "<p style='color: #f57c00;'>提示: 你们有一般的社会关系，有一定共同点。</p>";
-    } else {
-        html += "<p style='color: #757575;'>提示: 你们的社会关系较弱，共同点较少。</p>";
-    }
-
-    ui->relationTextBrowser->setHtml(html);
 }
 
 void AnalysisWindow::onBackButtonClicked()
 {
+    emit windowClosed();
     this->close();
-    if (parentWidget()) {
-        parentWidget()->show();
+}
+
+void AnalysisWindow::closeEvent(QCloseEvent *event)
+{
+    emit windowClosed();
+    QMainWindow::closeEvent(event);
+}
+
+
+// ============ 图像处理函数实现 ============
+
+QImage AnalysisWindow::applyBayerDithering(const QImage &input)
+{
+    QImage output = input.convertToFormat(QImage::Format_ARGB32);
+
+    // 4x4 Bayer矩阵
+    int bayerMatrix[4][4] = {
+        { 0, 8, 2, 10 },
+        { 12, 4, 14, 6 },
+        { 3, 11, 1, 9 },
+        { 15, 7, 13, 5 }
+    };
+
+    for (int y = 0; y < output.height(); ++y) {
+        QRgb *scanLine = reinterpret_cast<QRgb*>(output.scanLine(y));
+        for (int x = 0; x < output.width(); ++x) {
+            QRgb pixel = scanLine[x];
+            int alpha = qAlpha(pixel);
+
+            // 如果完全透明，跳过处理
+            if (alpha == 0) {
+                continue;
+            }
+
+            // 计算灰度值（考虑Alpha）
+            QColor color(pixel);
+            int gray = (color.red() * 0.299 +
+                        color.green() * 0.587 +
+                        color.blue() * 0.114);
+
+            int threshold = bayerMatrix[y % 4][x % 4] * 16;  // 0-240
+
+            // 二值化，但保留Alpha
+            QRgb newPixel;
+            if (gray > threshold) {
+                newPixel = qRgba(255, 255, 255, alpha);  // 白色
+            } else {
+                newPixel = qRgba(0, 0, 0, alpha);        // 黑色
+            }
+
+            scanLine[x] = newPixel;
+        }
     }
+
+    return output;
+}
+
+QImage AnalysisWindow::applyPixelation(const QImage &input, int blockSize)
+{
+    QImage output = input.convertToFormat(QImage::Format_ARGB32);
+
+    for (int y = 0; y < output.height(); y += blockSize) {
+        for (int x = 0; x < output.width(); x += blockSize) {
+            // 计算区块的平均颜色和平均Alpha
+            int r = 0, g = 0, b = 0, a = 0;
+            int count = 0;
+
+            for (int dy = 0; dy < blockSize && y + dy < output.height(); dy++) {
+                QRgb *line = reinterpret_cast<QRgb*>(output.scanLine(y + dy));
+                for (int dx = 0; dx < blockSize && x + dx < output.width(); dx++) {
+                    QRgb pixel = line[x + dx];
+                    r += qRed(pixel);
+                    g += qGreen(pixel);
+                    b += qBlue(pixel);
+                    a += qAlpha(pixel);
+                    count++;
+                }
+            }
+
+            if (count > 0) {
+                QRgb avgPixel = qRgba(r / count, g / count, b / count, a / count);
+
+                // 填充整个区块
+                for (int dy = 0; dy < blockSize && y + dy < output.height(); dy++) {
+                    QRgb *line = reinterpret_cast<QRgb*>(output.scanLine(y + dy));
+                    for (int dx = 0; dx < blockSize && x + dx < output.width(); dx++) {
+                        line[x + dx] = avgPixel;
+                    }
+                }
+            }
+        }
+    }
+
+    return output;
 }
