@@ -1,0 +1,20 @@
+# 忽略编译生成的临时文件夹
+build/
+out/
+x64/
+Debug/
+Release/
+
+# 忽略 VS 的配置文件夹
+.vs/
+*.user
+*.suo
+*.ipch
+*.aps
+
+# 忽略 ImGui 的一些临时文件 (如果有)
+*.log
+*.obj
+*.exe
+*.pdb
+*.ilk
