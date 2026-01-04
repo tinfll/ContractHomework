@@ -63,7 +63,7 @@ public:
 
         verticalLayout->addWidget(label);
 
-        verticalSpacer = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer = new QSpacerItem(20, 30, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer);
 
@@ -96,7 +96,7 @@ public:
 
         verticalLayout->addWidget(groupBox);
 
-        verticalSpacer_2 = new QSpacerItem(20, 40, QSizePolicy::Minimum, QSizePolicy::Expanding);
+        verticalSpacer_2 = new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Expanding);
 
         verticalLayout->addItem(verticalSpacer_2);
 
@@ -143,7 +143,7 @@ public:
 #if QT_CONFIG(shortcut)
         actionExit->setShortcut(QCoreApplication::translate("MainWindow", "Ctrl+Q", nullptr));
 #endif // QT_CONFIG(shortcut)
-        label->setText(QCoreApplication::translate("MainWindow", "\346\210\221\346\230\257\344\273\237\350\231\271\347\232\204\347\213\227", nullptr));
+        label->setText(QCoreApplication::translate("MainWindow", "\351\200\232\350\256\257\345\275\225\347\256\241\347\220\206\347\263\273\347\273\237", nullptr));
         groupBox->setTitle(QCoreApplication::translate("MainWindow", "\351\200\211\346\213\251\346\223\215\344\275\234", nullptr));
         selectPersonButton->setText(QCoreApplication::translate("MainWindow", "ChooseYourSystem", nullptr));
         compareButton->setText(QCoreApplication::translate("MainWindow", "AnalyseYourSystem", nullptr));
