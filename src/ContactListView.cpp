@@ -4,6 +4,7 @@
 #include "imgui.h"
 #include <algorithm>
 #include <string>
+#include <sstream>
 
 
 
@@ -49,7 +50,10 @@ void OpenEditModal(const Contact& contact, int index, bool isNew) {
 
 	// 标签转字符串 (空格分隔)
 	std::string tagsStr;
-	for (const auto& t : contact.tags) tagsStr += t + " ";
+	for (int tid : contact.tagIDs) {
+		if (tid >= 0 && tid < Contact::globalIdToTag.size())
+			tagsStr += Contact::globalIdToTag[tid] + " ";
+	}
 	strcpy_s(g_State.editTags, tagsStr.c_str());
 }
 
@@ -69,7 +73,13 @@ void PerformSearch(const std::vector<Contact>& contacts) {
 		if (g_State.searchType == 0) match = (c.name.find(key) != std::string::npos);       // 姓名
 		else if (g_State.searchType == 1) match = (c.city.find(key) != std::string::npos);  // 城市
 		else if (g_State.searchType == 2) {                                                 // 标签
-			for (auto& t : c.tags) if (t.find(key) != std::string::npos) match = true;
+			for (int tid : c.tagIDs) {
+				if (tid >= 0 && tid < Contact::globalIdToTag.size()) {
+					if (Contact::globalIdToTag[tid].find(key) != std::string::npos)
+						match = true;
+						break;
+				}
+			}
 		}
 		else if (g_State.searchType == 3) match = (c.phone.find(key) != std::string::npos); // 电话
 
@@ -154,14 +164,18 @@ void RenderContactListView(SocialAnalyzer& app) {
 
 	ImGui::BeginChild("ListRegion", ImVec2(0, 0), true);
 
-	if (ImGui::BeginTable("ContactTable", 6, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY)) {
+	if (ImGui::BeginTable("ContactTable", 8, ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_Resizable | ImGuiTableFlags_ScrollY)) {
 
 		ImGui::TableSetupColumn("ID", ImGuiTableColumnFlags_WidthFixed, 40.0f);
 		ImGui::TableSetupColumn("姓名", ImGuiTableColumnFlags_WidthFixed, 100.0f);
 		ImGui::TableSetupColumn("电话", ImGuiTableColumnFlags_WidthFixed, 120.0f);
 		ImGui::TableSetupColumn("城市", ImGuiTableColumnFlags_WidthFixed, 80.0f);
+		ImGui::TableSetupColumn("单位", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+		ImGui::TableSetupColumn("住址", ImGuiTableColumnFlags_WidthFixed, 150.0f);
+
 		ImGui::TableSetupColumn("标签", ImGuiTableColumnFlags_WidthStretch);
 		ImGui::TableSetupColumn("操作", ImGuiTableColumnFlags_WidthFixed, 120.0f);
+		ImGui::TableSetupScrollFreeze(0, 1);
 		ImGui::TableHeadersRow();
 
 		for (int i = 0; i < totalItems; i++) {
@@ -175,12 +189,16 @@ void RenderContactListView(SocialAnalyzer& app) {
 			ImGui::TableNextColumn(); ImGui::Text("%s", c.name.c_str());
 			ImGui::TableNextColumn(); ImGui::Text("%s", c.phone.c_str());
 			ImGui::TableNextColumn(); ImGui::Text("%s", c.city.c_str());
+			ImGui::TableNextColumn(); ImGui::Text("%s", c.company.c_str()); 
+			ImGui::TableNextColumn(); ImGui::Text("%s", c.address.c_str());
 
 			ImGui::TableNextColumn();
 			// 简单拼接标签显示
-			for (auto& t : c.tags) {
-				ImGui::TextDisabled("%s ", t.c_str());
-				ImGui::SameLine();
+			for (int tid : c.tagIDs) {
+				if (tid >= 0 && tid < Contact::globalIdToTag.size()) {
+					ImGui::TextDisabled("%s ", Contact::globalIdToTag[tid].c_str());
+					ImGui::SameLine();
+				}
 			}
 
 			ImGui::TableNextColumn();
@@ -247,10 +265,13 @@ void RenderContactListView(SocialAnalyzer& app) {
 			c.address = g_State.editAddress;
 
 			// 解析标签 string -> vector
-			c.tags.clear();
+			c.tagIDs.clear();
 			std::stringstream ss(g_State.editTags);
 			std::string tag;
-			while (ss >> tag) c.tags.push_back(tag);
+			while (ss >> tag) {
+				int tid = Contact::GetOrCreateTagID(tag);
+				c.tagIDs.push_back(tid);
+			}
 
 			// 2. 更新到主列表
 			if (g_State.isCreatingNew) {

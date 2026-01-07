@@ -2,8 +2,27 @@
 #include <iostream>
 #include <sstream>
 #include <algorithm>
+#include <map>
+#include <vector>
+
+
+std::map<std::string, int> Contact::globalTagToId;
+std::vector<std::string> Contact::globalIdToTag;
+
+
+int Contact::GetOrCreateTagID(const std::string& tag) {
+	if (globalTagToId.find(tag) == globalTagToId.end()) {
+		int newId = (int)globalIdToTag.size();
+		globalIdToTag.push_back(tag);
+		globalTagToId[tag] = newId;
+		return newId;
+	}
+	else return globalTagToId[tag];
+}
+
 
 bool Contact::parseFromString(const std::string& line) {
+
 	std::stringstream ss(line);
 	std::string segment;
 	std::vector<std::string> parts;
@@ -13,12 +32,12 @@ bool Contact::parseFromString(const std::string& line) {
 	}
 
 	if (parts.size() < 7) {
-		std::cerr << "错误: 数据格式不足7项 -> " << line << std::endl;
+		std::cerr << "错误: 数据格式不足 -> " << line << std::endl;
 		return false;
 	}
 
 	try {
-		std::stoi(parts[0]);
+		id = std::stoi(parts[0]);
 	}
 	catch (...) {
 		std::cerr << "错误: ID不是数字 -> " << parts[0] << std::endl;
@@ -32,15 +51,16 @@ bool Contact::parseFromString(const std::string& line) {
 	phone = parts[4];
 	city = parts[5];
 	company = parts[6];
+	address = parts[7];
 
-	tags.clear();
-	for (size_t i = 7; i < parts.size(); i++) {
-		tags.push_back(parts[i]);
+	tagIDs.clear();
+	for (size_t i = 8; i < parts.size(); i++) {
+		int tid = GetOrCreateTagID(parts[i]);
+		tagIDs.push_back(tid);
 	}
 
 	return true;
 }
-
 
 
 std::string Contact::toString() const {
@@ -51,10 +71,11 @@ std::string Contact::toString() const {
 		age + " " +
 		phone + " " +
 		city + " " +
-		company;
+		company + " " +
+		address;
 
-	for (const auto& tag : tags) {
-		result += " " + tag;
+	for (int tid : tagIDs) {
+		result += " " + globalIdToTag[tid];
 	}
 
 	return result;
@@ -62,4 +83,12 @@ std::string Contact::toString() const {
 
 std::string Contact::getShortInfo() const {
 	return std::to_string(id) + ". " + name;
+}
+
+std::vector<std::string> Contact::getTagStrings() const {
+	std::vector<std::string> names;
+	for (int tid : tagIDs) {
+		names.push_back(globalIdToTag[tid]);
+	}
+	return names;
 }

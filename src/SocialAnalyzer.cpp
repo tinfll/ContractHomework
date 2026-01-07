@@ -61,8 +61,11 @@ bool SocialAnalyzer::loadContactFile(const std::string& fullPath, int slot) {
 std::map<std::string, int> SocialAnalyzer::countTags(const std::vector<Contact>& contacts) {
     std::map<std::string, int> counts;
     for (const auto& c : contacts) {
-        for (const auto& tag : c.tags) {
-            if (!tag.empty()) counts[tag]++;
+        for (int tid : c.tagIDs) {
+            if (tid >= 0 && tid < Contact::globalIdToTag.size()) {
+                std::string tagName = Contact::globalIdToTag[tid];
+                if (!tagName.empty()) counts[tagName]++;
+            }
         }
     }
     return counts;
@@ -122,9 +125,9 @@ double SocialAnalyzer::calculateTagSimilarity() {
 
         if (isCommon) {
             bool hasCommonTag = false;
-            for (const auto& tag : c1.tags) {
-                // std::find 在 vector 中查找
-                if (std::find(c2_found.tags.begin(), c2_found.tags.end(), tag) != c2_found.tags.end()) {
+            for (int tagID :c1.tagIDs) {
+                //比较id速度更快
+                if (std::find(c2_found.tagIDs.begin(), c2_found.tagIDs.end(), tagID) != c2_found.tagIDs.end()) {
                     hasCommonTag = true;
                     break;
                 }
@@ -449,24 +452,6 @@ void RenderAnalysisResult(SocialAnalyzer& app) {
 
 
 
-// 界面：查看/管理系统 (1.1版空壳)
-void RenderContactList(SocialAnalyzer& app) {
-    SetupFullScreenWindow("SystemView");
-
-    // 1. 顶部导航
-    if (ImGui::Button("<< 返回主菜单")) {
-        app.currentState = AppState::Menu;
-    }
-    ImGui::SameLine();
-    ImGui::Text("当前正在管理: %s", app.file1Name.c_str());
-    ImGui::Separator();
-
-    // 显示一下加载了多少人，证明数据是对的
-    ImGui::Text("成功加载联系人数量: %d 人", app.contacts1.size());
-
-
-    ImGui::End();
-}
 
 void SocialAnalyzer::saveContacts(const std::string& fullPath, int slot) {
     std::ofstream file(fullPath);
@@ -490,9 +475,12 @@ void SocialAnalyzer::saveContacts(const std::string& fullPath, int slot) {
             << c.address;
 
         // 写入标签
-        for (const auto& tag : c.tags) {
-            if (!tag.empty()) {
-                file << " " << tag;
+        for (int tid : c.tagIDs){
+            if (tid >= 0 && tid < Contact::globalIdToTag.size()) {
+                std::string tagName = Contact::globalIdToTag[tid];
+                if (!tagName.empty()) {
+                    file << " " << tagName;
+                }
             }
         }
         file << "\n";
